@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -49,20 +50,41 @@ public class AuthController {
         response.sendRedirect(url);
     }
 
+    @Value("${frontend.url:http://localhost:4200}")
+    private String frontendUrl;
+
     @GetMapping("/github/callback")
     @Operation(summary = "GitHub OAuth callback - redirects to frontend with user data")
-    public void githubCallback(@RequestParam String code, HttpServletResponse response) throws IOException {
-        LoginResponse data = gitHubOAuthService.handleCallback(code);
-        String redirectUrl = "http://localhost:4200/auth/callback"
-                + "?token=" + encode(data.getToken())
-                + "&id=" + encode(data.getId())
-                + "&nombre=" + encode(data.getNombre())
-                + "&email=" + encode(data.getEmail())
-                + "&needsRole=" + data.getNeedsRoleSelection();
-        if (data.getRolActivo() != null) {
-            redirectUrl += "&role=" + encode(data.getRolActivo().toLowerCase());
+    public void githubCallback(@RequestParam(required = false) String code,
+                               @RequestParam(required = false) String error,
+                               HttpServletResponse response) throws IOException {
+        // Handle user cancellation or GitHub errors
+        if (error != null) {
+            response.sendRedirect(frontendUrl + "/auth/callback?error=" + encode(error));
+            return;
         }
-        response.sendRedirect(redirectUrl);
+
+        // Handle missing code
+        if (code == null || code.isEmpty()) {
+            response.sendRedirect(frontendUrl + "/auth/callback?error=missing_code");
+            return;
+        }
+
+        try {
+            LoginResponse data = gitHubOAuthService.handleCallback(code);
+            String redirectUrl = frontendUrl + "/auth/callback"
+                    + "?token=" + encode(data.getToken())
+                    + "&id=" + encode(data.getId())
+                    + "&nombre=" + encode(data.getNombre() != null ? data.getNombre() : "")
+                    + "&email=" + encode(data.getEmail() != null ? data.getEmail() : "")
+                    + "&needsRole=" + data.getNeedsRoleSelection();
+            if (data.getRolActivo() != null) {
+                redirectUrl += "&role=" + encode(data.getRolActivo().toLowerCase());
+            }
+            response.sendRedirect(redirectUrl);
+        } catch (Exception e) {
+            response.sendRedirect(frontendUrl + "/auth/callback?error=" + encode(e.getMessage()));
+        }
     }
 
     @PostMapping("/complete-role")
