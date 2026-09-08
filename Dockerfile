@@ -1,5 +1,7 @@
 FROM eclipse-temurin:21-jdk-alpine
 
+RUN apk add --no-cache ca-certificates
+
 WORKDIR /app
 
 COPY pom.xml .
