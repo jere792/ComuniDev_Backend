@@ -10,4 +10,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Ping Render
-        run: curl -s https://TU-BACKEND.onrender.com/api/v1/health > /dev/null
+        run: curl -sf https://comunidev-backend.onrender.com/api/v1/debug/db-info > /dev/null
