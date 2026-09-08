@@ -1,0 +1,10 @@
+target/
+.git/
+.gitignore
+app.log
+doc/
+HELP.md
+*.md
+.idea/
+*.iml
+.vscode/

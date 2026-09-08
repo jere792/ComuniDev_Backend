@@ -1177,6 +1177,8 @@ El módulo EcoDev contribuye al ODS 12 al promover consumo responsable de tecnol
 
 ## 8. Puntos, niveles, insignias y planes
 
+> **NOTA:** Esta sección NO está implementada en el MVP. Se预留 para una futura versión con gamificación y planes premium.
+
 Se deben separar dos conceptos:
 
 - **Puntos/reputación:** gamificación por aportes positivos a la comunidad.
@@ -1435,7 +1437,6 @@ Si se necesitan conversaciones extensas dentro del ticket, crear una colección 
   "entidadId": "ObjectId",
   "datosAntes": { "roles": ["DEVELOPER"] },
   "datosDespues": { "roles": ["DEVELOPER", "MODERATOR"] },
-  "ip": "opcional",
   "createdAt": "ISODate"
 }
 ```

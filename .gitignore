@@ -31,3 +31,10 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Docker ###
+docker-compose*.yml
+
+### Logs ###
+*.log
+app.log

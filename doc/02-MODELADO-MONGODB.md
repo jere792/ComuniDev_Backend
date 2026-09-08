@@ -25,5 +25,5 @@ MongoDB se utilizará como base documental. Cada entidad se representa como una 
 | Mensajería y presencia | conversations, messages, activity_status_history, notifications |
 | Empleabilidad | vacancies, applications, application_status_history |
 | ODS 12 / EcoDev | ecotech_posts, recycling_points, ecotech_transactions, company_sustainability_practices |
-| Gamificación y planes | user_points, point_transactions, badges, user_badges, plans, subscriptions |
+| Gamificación y planes | user_points, point_transactions, badges, user_badges, plans, subscriptions *(pendiente para futuro)* |
 | Seguridad y operación | reports, moderation_actions, support_tickets, audit_logs |
