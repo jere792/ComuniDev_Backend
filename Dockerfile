@@ -13,6 +13,6 @@ COPY src ./src
 
 RUN ./mvnw clean package -DskipTests -B
 
-EXPOSE ${PORT:8080}
+EXPOSE 8080
 
 CMD ["java", "-jar", "target/comunidev-backend-0.0.1-SNAPSHOT.jar"]
