@@ -38,3 +38,8 @@ docker-compose*.yml
 ### Logs ###
 *.log
 app.log
+
+### Environment ###
+.env.local
+.env
+!.env.example
