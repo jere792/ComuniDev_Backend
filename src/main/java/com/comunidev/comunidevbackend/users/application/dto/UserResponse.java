@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.Instant;
 import java.util.Set;
 
 @Getter
@@ -56,5 +55,5 @@ public class UserResponse {
     private Integer conexionesCount;
 
     @Schema(description = "Creation date")
-    private Instant createdAt;
+    private String createdAt;
 }

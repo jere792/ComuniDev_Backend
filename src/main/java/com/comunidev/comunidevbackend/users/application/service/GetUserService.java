@@ -49,16 +49,18 @@ public class GetUserService implements GetUserUseCase {
         response.setEmail(user.getEmail());
         response.setFotoPerfilUrl(user.getFotoPerfilUrl());
         response.setBannerUrl(user.getBannerUrl());
-        response.setRoles(user.getRoles().stream()
-                .map(UserRole::name)
-                .collect(Collectors.toSet()));
-        response.setRolActivo(user.getRolActivo().name());
-        response.setEstadoCuenta(user.getEstadoCuenta().name());
+        if (user.getRoles() != null) {
+            response.setRoles(user.getRoles().stream()
+                    .map(UserRole::name)
+                    .collect(Collectors.toSet()));
+        }
+        response.setRolActivo(user.getRolActivo() != null ? user.getRolActivo().name() : null);
+        response.setEstadoCuenta(user.getEstadoCuenta() != null ? user.getEstadoCuenta().name() : null);
         response.setEmailVerificado(user.getEmailVerificado());
         response.setSeguidoresCount(user.getSeguidoresCount());
         response.setSiguiendoCount(user.getSiguiendoCount());
         response.setConexionesCount(user.getConexionesCount());
-        response.setCreatedAt(user.getCreatedAt());
+        response.setCreatedAt(user.getCreatedAt() != null ? user.getCreatedAt().toString() : null);
         return response;
     }
 }
