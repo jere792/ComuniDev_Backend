@@ -2,6 +2,7 @@ package com.comunidev.comunidevbackend.users.application.port.out;
 
 import com.comunidev.comunidevbackend.users.domain.User;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface UserRepositoryPort {
@@ -9,6 +10,7 @@ public interface UserRepositoryPort {
     Optional<User> findById(String id);
     Optional<User> findByEmail(String email);
     Optional<User> findByNombreUsuario(String nombreUsuario);
+    List<User> findAll();
     boolean existsByEmail(String email);
     boolean existsByNombreUsuario(String nombreUsuario);
     void deleteById(String id);

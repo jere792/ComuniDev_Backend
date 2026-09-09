@@ -28,6 +28,12 @@ public class UpdateUserService implements UpdateUserUseCase {
         if (request.getNombre() != null) {
             user.setNombre(request.getNombre());
         }
+        if (request.getNombreUsuario() != null) {
+            user.setNombreUsuario(request.getNombreUsuario());
+        }
+        if (request.getEmail() != null) {
+            user.setEmail(request.getEmail());
+        }
         if (request.getFotoPerfilUrl() != null) {
             user.setFotoPerfilUrl(request.getFotoPerfilUrl());
         }

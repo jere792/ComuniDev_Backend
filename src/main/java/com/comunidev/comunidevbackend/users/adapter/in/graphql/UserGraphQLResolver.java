@@ -4,6 +4,7 @@ import com.comunidev.comunidevbackend.users.application.dto.UpdateUserRequest;
 import com.comunidev.comunidevbackend.users.application.dto.UserResponse;
 import com.comunidev.comunidevbackend.users.application.port.in.GetUserUseCase;
 import com.comunidev.comunidevbackend.users.application.port.in.UpdateUserUseCase;
+import com.comunidev.comunidevbackend.users.application.port.out.UserRepositoryPort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
@@ -18,6 +19,12 @@ public class UserGraphQLResolver {
 
     private final GetUserUseCase getUserUseCase;
     private final UpdateUserUseCase updateUserUseCase;
+    private final UserRepositoryPort userRepositoryPort;
+
+    @QueryMapping
+    public List<UserResponse> users() {
+        return getUserUseCase.getAllUsers();
+    }
 
     @QueryMapping
     public UserResponse user(@Argument String id) {
@@ -43,9 +50,21 @@ public class UserGraphQLResolver {
         
         UpdateUserRequest request = new UpdateUserRequest();
         request.setNombre(nombre);
+        request.setNombreUsuario(nombreUsuario);
+        request.setEmail(email);
         request.setFotoPerfilUrl(fotoPerfilUrl);
         request.setBannerUrl(bannerUrl);
         
         return updateUserUseCase.updateUser(id, request);
+    }
+
+    @MutationMapping
+    public Boolean deleteUser(@Argument String id) {
+        try {
+            userRepositoryPort.deleteById(id);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 }

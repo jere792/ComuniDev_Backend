@@ -13,7 +13,7 @@ type User {
   siguiendoCount: Int
   conexionesCount: Int
   createdAt: String
-}
+} 
 
 type AuthPayload {
   token: String!

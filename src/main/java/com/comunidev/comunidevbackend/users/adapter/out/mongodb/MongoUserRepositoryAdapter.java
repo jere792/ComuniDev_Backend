@@ -5,6 +5,7 @@ import com.comunidev.comunidevbackend.users.domain.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -31,6 +32,11 @@ public class MongoUserRepositoryAdapter implements UserRepositoryPort {
     @Override
     public Optional<User> findByNombreUsuario(String nombreUsuario) {
         return repository.findByNombreUsuario(nombreUsuario);
+    }
+
+    @Override
+    public List<User> findAll() {
+        return repository.findAll();
     }
 
     @Override

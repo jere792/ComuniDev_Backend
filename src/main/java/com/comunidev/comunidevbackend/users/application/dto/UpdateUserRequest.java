@@ -16,6 +16,12 @@ public class UpdateUserRequest {
     @Schema(description = "User's full name", example = "Carlos Ruiz")
     private String nombre;
 
+    @Schema(description = "Username", example = "carlosdev")
+    private String nombreUsuario;
+
+    @Schema(description = "Email", example = "carlos@correo.com")
+    private String email;
+
     @Schema(description = "Profile picture URL")
     private String fotoPerfilUrl;
 

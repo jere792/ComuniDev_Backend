@@ -8,6 +8,7 @@ import com.comunidev.comunidevbackend.users.domain.User;
 import com.comunidev.comunidevbackend.users.domain.UserRole;
 import lombok.RequiredArgsConstructor;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -31,6 +32,13 @@ public class GetUserService implements GetUserUseCase {
     @Override
     public Optional<UserResponse> getUserByUsername(String username) {
         return userRepositoryPort.findByNombreUsuario(username).map(this::mapToResponse);
+    }
+
+    @Override
+    public List<UserResponse> getAllUsers() {
+        return userRepositoryPort.findAll().stream()
+                .map(this::mapToResponse)
+                .collect(Collectors.toList());
     }
 
     private UserResponse mapToResponse(User user) {
