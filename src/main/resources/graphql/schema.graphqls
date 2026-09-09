@@ -1,0 +1,33 @@
+type User {
+  id: ID!
+  nombre: String!
+  nombreUsuario: String!
+  email: String!
+  fotoPerfilUrl: String
+  bannerUrl: String
+  roles: [String!]!
+  rolActivo: String
+  estadoCuenta: String!
+  emailVerificado: Boolean!
+  seguidoresCount: Int
+  siguiendoCount: Int
+  conexionesCount: Int
+  createdAt: String
+}
+
+type AuthPayload {
+  token: String!
+  user: User!
+}
+
+type Query {
+  me: User
+  user(id: ID!): User
+  users: [User!]!
+}
+
+type Mutation {
+  login(email: String!, password: String!): AuthPayload
+  updateUser(id: ID!, nombre: String, nombreUsuario: String, email: String, fotoPerfilUrl: String, bannerUrl: String): User
+  deleteUser(id: ID!): Boolean
+}
