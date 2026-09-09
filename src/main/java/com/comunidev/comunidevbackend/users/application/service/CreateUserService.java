@@ -63,7 +63,7 @@ public class CreateUserService implements CreateUserUseCase {
         response.setSeguidoresCount(user.getSeguidoresCount());
         response.setSiguiendoCount(user.getSiguiendoCount());
         response.setConexionesCount(user.getConexionesCount());
-        response.setCreatedAt(user.getCreatedAt());
+        response.setCreatedAt(user.getCreatedAt() != null ? user.getCreatedAt().toString() : null);
         return response;
     }
 }
