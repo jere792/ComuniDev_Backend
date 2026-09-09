@@ -2,7 +2,11 @@ package com.comunidev.comunidevbackend.users.domain;
 
 public enum UserRole {
     DEVELOPER,
+    DESARROLLADOR,
     RECRUITER,
+    RECLUTADOR,
     MODERATOR,
-    ADMIN
+    MODERADOR,
+    ADMIN,
+    ADMINISTRADOR
 }
