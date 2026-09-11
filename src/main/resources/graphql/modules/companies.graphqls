@@ -1,0 +1,79 @@
+type Company {
+  id: ID!
+  nombre: String!
+  descripcion: String
+  sector: String
+  sitioWeb: String
+  logoUrl: String
+  bannerUrl: String
+  ubicacion: CompanyUbicacion
+  contacto: CompanyContacto
+  redes: CompanyRedes
+  estadoVerificacion: String
+  vacantesActivasCount: Int
+}
+
+type CompanyUbicacion {
+  pais: String
+  ciudad: String
+  distrito: String
+  direccion: String
+}
+
+type CompanyContacto {
+  email: String
+  telefono: String
+}
+
+type CompanyRedes {
+  linkedin: String
+  github: String
+}
+
+extend type Query {
+  companies: [Company!]!
+  company(id: ID!): Company
+}
+
+extend type Mutation {
+  createCompany(
+    nombre: String!
+    descripcion: String
+    sector: String
+    sitioWeb: String
+    logoUrl: String
+    bannerUrl: String
+    ubicacion: CompanyUbicacionInput
+    contacto: CompanyContactoInput
+    redes: CompanyRedesInput
+  ): Company
+  updateCompany(
+    id: ID!
+    nombre: String
+    descripcion: String
+    sector: String
+    sitioWeb: String
+    logoUrl: String
+    bannerUrl: String
+    ubicacion: CompanyUbicacionInput
+    contacto: CompanyContactoInput
+    redes: CompanyRedesInput
+  ): Company
+}
+
+input CompanyUbicacionInput {
+  pais: String
+  ciudad: String
+  distrito: String
+  direccion: String
+}
+
+input CompanyContactoInput {
+  email: String
+  telefono: String
+}
+
+input CompanyRedesInput {
+  linkedin: String
+  github: String
+}

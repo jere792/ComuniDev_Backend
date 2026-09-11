@@ -1,5 +1,7 @@
 package com.comunidev.comunidevbackend.users.application.dto;
 
+import com.comunidev.comunidevbackend.developer_profile.domain.DeveloperProfile;
+import com.comunidev.comunidevbackend.recruiter_profile.domain.RecruiterProfile;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -56,4 +58,10 @@ public class UserResponse {
 
     @Schema(description = "Creation date")
     private String createdAt;
+
+    @Schema(description = "Developer profile (if user has DEVELOPER role)")
+    private DeveloperProfile developerProfile;
+
+    @Schema(description = "Recruiter profile (if user has RECRUITER role)")
+    private RecruiterProfile recruiterProfile;
 }

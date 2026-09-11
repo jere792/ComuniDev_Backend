@@ -1,0 +1,66 @@
+type EcotechPost {
+  id: ID!
+  autorId: String!
+  tipo: String!
+  titulo: String!
+  descripcion: String
+  categoriaEquipo: String
+  condicion: String
+  imagenes: [String]
+  ubicacionAproximada: String
+  etiquetas: [String]
+  estado: String
+  interesadosCount: Int
+  createdAt: String
+}
+
+type RecyclingPoint {
+  id: ID!
+  nombre: String!
+  tipo: String
+  organizacion: String
+  descripcion: String
+  ubicacion: String
+  materialesAceptados: [String]
+  horario: String
+  contacto: String
+  estadoVerificacion: String
+}
+
+type EcotechTransaction {
+  id: ID!
+  ecotechPostId: String!
+  emisorId: String!
+  receptorId: String!
+  tipo: String
+  estado: String!
+  createdAt: String
+}
+
+extend type Query {
+  ecotechPosts: [EcotechPost!]!
+  ecotechPost(id: ID!): EcotechPost
+  recyclingPoints: [RecyclingPoint!]!
+  ecotechTransactions(userId: String!): [EcotechTransaction!]!
+}
+
+extend type Mutation {
+  createEcotechPost(
+    autorId: String!
+    tipo: String!
+    titulo: String!
+    descripcion: String
+    categoriaEquipo: String
+    condicion: String
+    imagenes: [String]
+    ubicacionAproximada: String
+    etiquetas: [String]
+  ): EcotechPost
+  initTransaction(
+    ecotechPostId: String!
+    emisorId: String!
+    receptorId: String!
+    tipo: String
+  ): EcotechTransaction
+  confirmTransaction(transactionId: String!): EcotechTransaction
+}

@@ -47,4 +47,9 @@ public class SaveProfileService implements SaveProfileUseCase {
         return savedProfileRepositoryPort.findByRecruiterIdAndDeveloperId(recruiterId, developerId)
                 .isPresent();
     }
+
+    @Override
+    public List<SavedProfile> getSavedProfiles(String recruiterId) {
+        return savedProfileRepositoryPort.findAllByRecruiterId(recruiterId);
+    }
 }

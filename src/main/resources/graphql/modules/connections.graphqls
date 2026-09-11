@@ -1,0 +1,33 @@
+type ConnectionRequest {
+  id: ID!
+  solicitanteId: String!
+  receptorId: String!
+  mensaje: String
+  estado: String!
+  createdAt: String
+}
+
+type Connection {
+  id: ID!
+  usuarioMenorId: String!
+  usuarioMayorId: String!
+  iniciadorId: String!
+  estado: String!
+  createdAt: String
+}
+
+extend type Query {
+  connectionRequests(userId: String!): [ConnectionRequest!]!
+  connections(userId: String!): [Connection!]!
+}
+
+extend type Mutation {
+  sendConnectionRequest(
+    solicitanteId: String!
+    receptorId: String!
+    mensaje: String
+  ): ConnectionRequest
+  acceptConnection(requestId: String!): Connection
+  rejectConnection(requestId: String!): Boolean
+  removeConnection(connectionId: String!): Boolean
+}

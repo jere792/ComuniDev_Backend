@@ -1,0 +1,63 @@
+type Post {
+  id: ID!
+  autorId: String!
+  tipo: String!
+  contenido: PostContenido
+  etiquetas: [String]
+  categoria: String
+  visibilidad: String
+  estadoModeracion: String
+  estadisticas: PostEstadisticas
+  createdAt: String
+  updatedAt: String
+}
+
+type PostContenido {
+  texto: String
+  imagenes: [String]
+  videos: [String]
+  archivos: [String]
+  bloquesCodigo: [String]
+  enlaces: [String]
+}
+
+type PostEstadisticas {
+  vistas: Int
+  reaccionesCount: Int
+  comentariosCount: Int
+  compartidosCount: Int
+  guardadosCount: Int
+}
+
+extend type Query {
+  posts: [Post!]!
+  post(id: ID!): Post
+  feed(userId: String!): [Post!]!
+}
+
+extend type Mutation {
+  createPost(
+    autorId: String!
+    contenido: PostContenidoInput
+    etiquetas: [String]
+    categoria: String
+    visibilidad: String
+  ): Post
+  updatePost(
+    id: ID!
+    contenido: PostContenidoInput
+    etiquetas: [String]
+    categoria: String
+    visibilidad: String
+  ): Post
+  deletePost(id: ID!): Boolean
+}
+
+input PostContenidoInput {
+  texto: String
+  imagenes: [String]
+  videos: [String]
+  archivos: [String]
+  bloquesCodigo: [String]
+  enlaces: [String]
+}

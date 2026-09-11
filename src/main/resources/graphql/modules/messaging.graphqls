@@ -1,0 +1,60 @@
+type Conversation {
+  id: ID!
+  tipo: String!
+  participantes: [Participante]
+  ultimoMensaje: UltimoMensaje
+  createdAt: String
+}
+
+type Participante {
+  userId: String!
+  leidoHastaMensajeId: String
+  ultimoVistoEn: String
+}
+
+type UltimoMensaje {
+  mensajeId: String
+  textoPreview: String
+  remitenteId: String
+  fecha: String
+}
+
+type Message {
+  id: ID!
+  conversationId: String!
+  remitenteId: String!
+  contenido: MessageContenido
+  tipo: String!
+  estado: String!
+  createdAt: String
+}
+
+type MessageContenido {
+  texto: String
+  imagenes: [String]
+  archivos: [String]
+  enlaces: [String]
+}
+
+extend type Query {
+  conversations(userId: String!): [Conversation!]!
+  messages(conversationId: String!, page: Int, size: Int): [Message!]!
+}
+
+extend type Mutation {
+  createConversation(tipo: String!, participantes: [String!]!): Conversation
+  sendMessage(
+    conversationId: String!
+    remitenteId: String!
+    contenido: MessageContenidoInput
+    tipo: String!
+  ): Message
+  markMessageAsRead(messageId: String!, userId: String!): Boolean
+}
+
+input MessageContenidoInput {
+  texto: String
+  imagenes: [String]
+  archivos: [String]
+  enlaces: [String]
+}

@@ -1,0 +1,44 @@
+type UserPoints {
+  id: ID!
+  userId: String!
+  puntosTotales: Int
+  puntosPorCategoria: PuntosPorCategoria
+  nivel: String
+  progresoNivel: Float
+}
+
+type PuntosPorCategoria {
+  comunidad: Int
+  asistenciaTecnica: Int
+  ecoDev: Int
+  empleabilidad: Int
+}
+
+type PointTransaction {
+  id: ID!
+  userId: String!
+  tipoAccion: String!
+  puntos: Int!
+  descripcion: String
+  createdAt: String
+}
+
+type Badge {
+  id: ID!
+  nombre: String!
+  descripcion: String
+  iconoUrl: String
+}
+
+type UserBadge {
+  id: ID!
+  userId: String!
+  badgeId: String!
+  obtenidoEn: String
+}
+
+extend type Query {
+  userPoints(userId: String!): UserPoints
+  pointHistory(userId: String!): [PointTransaction!]!
+  badges(userId: String!): [UserBadge!]!
+}

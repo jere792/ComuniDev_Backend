@@ -1,0 +1,46 @@
+type RecruiterProfile {
+  id: ID!
+  userId: String!
+  nombres: String
+  apellidos: String
+  bio: String
+  cargo: String
+  bannerUrl: String
+  telefono: String
+  linkedinUrl: String
+  empresas: [RecruiterEmpresa]
+  verificado: Boolean
+}
+
+type RecruiterEmpresa {
+  companyId: String
+  cargoEnEmpresa: String
+  activo: Boolean
+}
+
+extend type Query {
+  recruiterProfile(userId: String!): RecruiterProfile
+  myRecruiterProfile: RecruiterProfile
+}
+
+extend type Mutation {
+  createRecruiterProfile(
+    userId: String!
+    nombres: String
+    apellidos: String
+    bio: String
+    cargo: String
+    telefono: String
+    linkedinUrl: String
+  ): RecruiterProfile
+  updateRecruiterProfile(
+    id: ID!
+    nombres: String
+    apellidos: String
+    bio: String
+    cargo: String
+    bannerUrl: String
+    telefono: String
+    linkedinUrl: String
+  ): RecruiterProfile
+}

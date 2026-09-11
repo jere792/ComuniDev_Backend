@@ -1,0 +1,36 @@
+type User {
+  id: ID!
+  nombre: String!
+  nombreUsuario: String!
+  email: String!
+  fotoPerfilUrl: String
+  bannerUrl: String
+  roles: [String!]!
+  rolActivo: String
+  estadoCuenta: String!
+  emailVerificado: Boolean!
+  seguidoresCount: Int
+  siguiendoCount: Int
+  conexionesCount: Int
+  createdAt: String
+  developerProfile: DeveloperProfile
+  recruiterProfile: RecruiterProfile
+}
+
+extend type Query {
+  me: User
+  user(id: ID!): User
+  users: [User!]!
+}
+
+extend type Mutation {
+  updateUser(
+    id: ID!
+    nombre: String
+    nombreUsuario: String
+    email: String
+    fotoPerfilUrl: String
+    bannerUrl: String
+  ): User
+  deleteUser(id: ID!): Boolean
+}

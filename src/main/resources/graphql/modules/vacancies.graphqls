@@ -1,0 +1,99 @@
+type Vacancy {
+  id: ID!
+  companyId: String
+  recruiterId: String
+  titulo: String!
+  descripcion: String
+  responsabilidades: [String]
+  requisitos: [String]
+  tecnologias: [String]
+  nivelExperiencia: String
+  modalidad: String
+  tipoContrato: String
+  ubicacion: String
+  remuneracion: VacancyRemuneracion
+  vacantesDisponibles: Int
+  estado: String
+  fechaLimite: String
+  destacada: Boolean
+  postulacionesCount: Int
+  createdAt: String
+}
+
+type VacancyRemuneracion {
+  visible: Boolean
+  moneda: String
+  minimo: Float
+  maximo: Float
+  periodo: String
+}
+
+type Application {
+  id: ID!
+  vacancyId: String!
+  developerId: String!
+  cartaPresentacion: String
+  estado: String!
+  reclutadorAsignadoId: String
+  createdAt: String
+}
+
+extend type Query {
+  vacancies(estado: String): [Vacancy!]!
+  vacancy(id: ID!): Vacancy
+  vacanciesByCompany(companyId: String!): [Vacancy!]!
+  applications(vacancyId: String!): [Application!]!
+  myApplications(developerId: String!): [Application!]!
+}
+
+extend type Mutation {
+  createVacancy(
+    companyId: String
+    recruiterId: String
+    titulo: String!
+    descripcion: String
+    responsabilidades: [String]
+    requisitos: [String]
+    tecnologias: [String]
+    nivelExperiencia: String
+    modalidad: String
+    tipoContrato: String
+    ubicacion: String
+    remuneracion: VacancyRemuneracionInput
+    vacantesDisponibles: Int
+    fechaLimite: String
+  ): Vacancy
+  updateVacancy(
+    id: ID!
+    titulo: String
+    descripcion: String
+    responsabilidades: [String]
+    requisitos: [String]
+    tecnologias: [String]
+    nivelExperiencia: String
+    modalidad: String
+    tipoContrato: String
+    ubicacion: String
+    remuneracion: VacancyRemuneracionInput
+    vacantesDisponibles: Int
+    fechaLimite: String
+  ): Vacancy
+  applyToVacancy(
+    vacancyId: String!
+    developerId: String!
+    cartaPresentacion: String
+  ): Application
+  updateApplicationStatus(
+    applicationId: String!
+    estado: String!
+  ): Application
+  withdrawApplication(applicationId: String!): Boolean
+}
+
+input VacancyRemuneracionInput {
+  visible: Boolean
+  moneda: String
+  minimo: Float
+  maximo: Float
+  periodo: String
+}

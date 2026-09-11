@@ -1,0 +1,130 @@
+type DeveloperProfile {
+  id: ID!
+  userId: String!
+  tituloProfesional: String
+  bannerUrl: String
+  bio: String
+  ubicacion: DeveloperUbicacion
+  tecnologias: [Tecnologia]
+  habilidadesBlandas: [String]
+  experiencias: [Experiencia]
+  educacion: [Educacion]
+  certificados: [Certificado]
+  proyectos: [Proyecto]
+  cv: CV
+  disponibilidadLaboral: DeveloperDisponibilidad
+  enlaces: DeveloperEnlaces
+}
+
+type DeveloperUbicacion {
+  pais: String
+  ciudad: String
+  distrito: String
+}
+
+type Tecnologia {
+  nombre: String!
+  nivel: String
+  aniosExperiencia: Int
+}
+
+type Experiencia {
+  cargo: String
+  empresa: String
+  fechaInicio: String
+  fechaFin: String
+  descripcion: String
+}
+
+type Educacion {
+  institucion: String
+  titulo: String
+  fechaInicio: String
+  fechaFin: String
+}
+
+type Certificado {
+  nombre: String
+  institucion: String
+  fechaObtencion: String
+  url: String
+}
+
+type Proyecto {
+  nombre: String
+  descripcion: String
+  url: String
+  tecnologias: [String]
+}
+
+type CV {
+  archivoUrl: String
+  nombreArchivo: String
+  actualizadoEn: String
+}
+
+type DeveloperDisponibilidad {
+  buscandoEmpleo: Boolean
+  modalidades: [String]
+  tiposContrato: [String]
+  pretensionSalarial: String
+}
+
+type DeveloperEnlaces {
+  github: String
+  linkedin: String
+  portafolio: String
+}
+
+extend type Query {
+  developerProfile(userId: String!): DeveloperProfile
+  myProfile: DeveloperProfile
+}
+
+extend type Mutation {
+  createDeveloperProfile(
+    userId: String!
+    tituloProfesional: String
+    bio: String
+    ubicacion: DeveloperUbicacionInput
+    tecnologias: [TecnologiaInput]
+    habilidadesBlandas: [String]
+    disponibilidadLaboral: DeveloperDisponibilidadInput
+    enlaces: DeveloperEnlacesInput
+  ): DeveloperProfile
+  updateDeveloperProfile(
+    id: ID!
+    tituloProfesional: String
+    bio: String
+    ubicacion: DeveloperUbicacionInput
+    tecnologias: [TecnologiaInput]
+    habilidadesBlandas: [String]
+    disponibilidadLaboral: DeveloperDisponibilidadInput
+    enlaces: DeveloperEnlacesInput
+  ): DeveloperProfile
+}
+
+input DeveloperUbicacionInput {
+  pais: String
+  ciudad: String
+  distrito: String
+}
+
+input TecnologiaInput {
+  nombre: String!
+  nivel: String
+  aniosExperiencia: Int
+}
+
+input DeveloperDisponibilidadInput {
+  buscandoEmpleo: Boolean
+  modalidades: [String]
+  tiposContrato: [String]
+  pretensionSalarial: String
+}
+
+input DeveloperEnlacesInput {
+  github: String
+  linkedin: String
+  portafolio: String
+}

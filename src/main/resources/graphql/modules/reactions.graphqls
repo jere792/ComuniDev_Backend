@@ -1,0 +1,29 @@
+type Reaction {
+  id: ID!
+  usuarioId: String!
+  objetivoId: String!
+  tipoObjetivo: String!
+  tipoReaccion: String!
+  createdAt: String
+}
+
+extend type Query {
+  reactions(targetId: String!, targetType: String!): [Reaction!]!
+  myReaction(userId: String!, targetId: String!, targetType: String!): Reaction
+}
+
+extend type Mutation {
+  react(
+    usuarioId: String!
+    objetivoId: String!
+    tipoObjetivo: String!
+    tipoReaccion: String!
+  ): Reaction
+  unreact(usuarioId: String!, objetivoId: String!, tipoObjetivo: String!): Boolean
+  changeReaction(
+    usuarioId: String!
+    objetivoId: String!
+    tipoObjetivo: String!
+    tipoReaccion: String!
+  ): Reaction
+}

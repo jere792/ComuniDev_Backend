@@ -1,0 +1,43 @@
+type Plan {
+  id: ID!
+  codigo: String!
+  nombre: String!
+  tipoTitular: String!
+  precio: PlanPrecio
+  beneficios: [String]
+  limites: PlanLimites
+}
+
+type PlanPrecio {
+  monto: Float
+  moneda: String
+  periodo: String
+}
+
+type PlanLimites {
+  publicacionesPorDia: Int
+  solicitudesConexionPorDia: Int
+  vacantesActivas: Int
+  vacantesDestacadas: Int
+  mensajesNuevosPorDia: Int
+}
+
+type Subscription {
+  id: ID!
+  titularId: String!
+  tipoTitular: String!
+  planId: String!
+  estado: String!
+  fechaInicio: String
+  fechaFin: String
+}
+
+extend type Query {
+  plans(tipoTitular: String): [Plan!]!
+  mySubscription(userId: String!): Subscription
+}
+
+extend type Mutation {
+  subscribe(tipoTitular: String!, titularId: String!, planId: String!): Subscription
+  cancelSubscription(subscriptionId: String!): Boolean
+}

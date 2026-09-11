@@ -1,0 +1,18 @@
+type Follow {
+  id: ID!
+  seguidorId: String!
+  tipoSeguido: String!
+  seguidoId: String!
+  createdAt: String
+}
+
+extend type Query {
+  followers(userId: String!): [Follow!]!
+  following(userId: String!): [Follow!]!
+  isFollowing(followerId: String!, followedId: String!): Boolean
+}
+
+extend type Mutation {
+  follow(seguidorId: String!, tipoSeguido: String!, seguidoId: String!): Follow
+  unfollow(seguidorId: String!, tipoSeguido: String!, seguidoId: String!): Boolean
+}

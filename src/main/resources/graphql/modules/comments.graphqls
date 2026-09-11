@@ -1,0 +1,30 @@
+type Comment {
+  id: ID!
+  autorId: String!
+  contenidoId: String!
+  tipoContenido: String!
+  parentCommentId: String
+  texto: String!
+  imagenes: [String]
+  estadoModeracion: String
+  reaccionesCount: Int
+  createdAt: String
+}
+
+extend type Query {
+  comments(contentId: String!, contentType: String!): [Comment!]!
+  comment(id: ID!): Comment
+}
+
+extend type Mutation {
+  createComment(
+    autorId: String!
+    contenidoId: String!
+    tipoContenido: String!
+    parentCommentId: String
+    texto: String!
+    imagenes: [String]
+  ): Comment
+  updateComment(id: ID!, texto: String, imagenes: [String]): Comment
+  deleteComment(id: ID!): Boolean
+}

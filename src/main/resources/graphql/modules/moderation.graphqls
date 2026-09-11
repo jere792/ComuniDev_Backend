@@ -1,0 +1,64 @@
+type Report {
+  id: ID!
+  reportanteId: String!
+  objetivoId: String!
+  tipoObjetivo: String!
+  motivo: String!
+  descripcion: String
+  estado: String!
+  asignadoAId: String
+  createdAt: String
+}
+
+type ModerationAction {
+  id: ID!
+  moderadorId: String!
+  reportId: String
+  objetivoId: String!
+  tipoObjetivo: String!
+  accion: String!
+  createdAt: String
+}
+
+type UserBan {
+  id: ID!
+  userId: String!
+  tipo: String!
+  razon: String
+  moderadorId: String
+  fechaInicio: String
+  fechaFin: String
+  desbaneado: Boolean
+}
+
+extend type Query {
+  reports(estado: String): [Report!]!
+  moderationActions(moderadorId: String!): [ModerationAction!]!
+  userBans(userId: String!): [UserBan!]!
+}
+
+extend type Mutation {
+  createReport(
+    reportanteId: String!
+    objetivoId: String!
+    tipoObjetivo: String!
+    motivo: String!
+    descripcion: String
+  ): Report
+  assignReport(reportId: String!, moderadorId: String!): Report
+  takeModerationAction(
+    moderadorId: String!
+    reportId: String
+    objetivoId: String!
+    tipoObjetivo: String!
+    accion: String!
+  ): ModerationAction
+  banUser(
+    userId: String!
+    tipo: String!
+    razon: String
+    moderadorId: String!
+    fechaFin: String
+  ): UserBan
+  unbanUser(banId: String!): Boolean
+}

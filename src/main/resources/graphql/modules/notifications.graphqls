@@ -1,0 +1,27 @@
+type Notification {
+  id: ID!
+  destinatarioId: String!
+  actorId: String
+  tipo: String!
+  titulo: String!
+  mensaje: String
+  referencia: NotificationReferencia
+  leida: Boolean!
+  createdAt: String
+}
+
+type NotificationReferencia {
+  tipo: String
+  id: String
+}
+
+extend type Query {
+  notifications(userId: String!, leida: Boolean): [Notification!]!
+  unreadCount(userId: String!): Int
+}
+
+extend type Mutation {
+  markNotificationAsRead(notificationId: String!): Boolean
+  markAllAsRead(userId: String!): Boolean
+  deleteNotification(notificationId: String!): Boolean
+}

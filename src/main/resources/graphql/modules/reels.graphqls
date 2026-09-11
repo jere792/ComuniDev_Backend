@@ -1,0 +1,58 @@
+type Reel {
+  id: ID!
+  autorId: String!
+  videoUrl: String!
+  portadaUrl: String
+  descripcion: String
+  etiquetas: [String]
+  musica: ReelMusica
+  duracionSegundos: Int
+  visibilidad: String
+  estadoModeracion: String
+  estadisticas: ReelEstadisticas
+  createdAt: String
+}
+
+type ReelMusica {
+  titulo: String
+  artista: String
+}
+
+type ReelEstadisticas {
+  vistas: Int
+  reaccionesCount: Int
+  comentariosCount: Int
+  compartidosCount: Int
+  guardadosCount: Int
+}
+
+extend type Query {
+  reels: [Reel!]!
+  reel(id: ID!): Reel
+  reelsByUser(userId: String!): [Reel!]!
+}
+
+extend type Mutation {
+  createReel(
+    autorId: String!
+    videoUrl: String!
+    portadaUrl: String
+    descripcion: String
+    etiquetas: [String]
+    musica: ReelMusicaInput
+    duracionSegundos: Int
+    visibilidad: String
+  ): Reel
+  updateReel(
+    id: ID!
+    descripcion: String
+    etiquetas: [String]
+    visibilidad: String
+  ): Reel
+  deleteReel(id: ID!): Boolean
+}
+
+input ReelMusicaInput {
+  titulo: String
+  artista: String
+}

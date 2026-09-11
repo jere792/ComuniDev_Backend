@@ -1,0 +1,100 @@
+type DeveloperProfileResponse {
+  id: ID!
+  nombre: String!
+  nombreUsuario: String!
+  fotoPerfilUrl: String
+  tituloProfesional: String
+  bio: String
+  ubicacionPais: String
+  ubicacionCiudad: String
+  tecnologias: [TecnologiaResponse]
+  habilidadesBlandas: [String]
+  disponibilidadLaboral: DisponibilidadLaboral
+  remoto: Boolean
+  experiencias: [ExperienciaResponse]
+}
+
+type TecnologiaResponse {
+  nombre: String!
+  nivel: String
+  aniosExperiencia: Int
+}
+
+type DisponibilidadLaboral {
+  buscandoEmpleo: Boolean
+  modalidades: [String]
+  tiposContrato: [String]
+}
+
+type ExperienciaResponse {
+  cargo: String
+  empresa: String
+  fechaInicio: String
+  fechaFin: String
+  descripcion: String
+}
+
+type SavedProfile {
+  id: ID!
+  recruiterId: String!
+  developerId: String!
+  notes: String
+  savedAt: String
+}
+
+type SavedSearch {
+  id: ID!
+  recruiterId: String!
+  name: String!
+  technologies: [String]
+  experienceLevel: String
+  locationCountry: String
+  locationCity: String
+  remoteAvailable: Boolean
+  availability: String
+  previousExperience: [String]
+  createdAt: String
+}
+
+type TalentSearchResult {
+  developers: [DeveloperProfileResponse!]!
+  total: Int!
+  page: Int!
+  size: Int!
+}
+
+extend type Query {
+  searchDevelopers(
+    technologies: [String]
+    experienceLevel: String
+    locationCountry: String
+    locationCity: String
+    remoteAvailable: Boolean
+    availability: String
+    previousExperience: [String]
+    sortBy: String
+    sortOrder: String
+    page: Int
+    size: Int
+  ): TalentSearchResult
+  savedProfiles(recruiterId: String!): [SavedProfile!]!
+  isProfileSaved(recruiterId: String!, developerId: String!): Boolean
+  savedSearches(recruiterId: String!): [SavedSearch!]!
+}
+
+extend type Mutation {
+  saveDeveloperProfile(recruiterId: String!, developerId: String!, notes: String): SavedProfile
+  unsaveDeveloperProfile(recruiterId: String!, developerId: String!): Boolean
+  saveSearch(
+    recruiterId: String!
+    name: String!
+    technologies: [String]
+    experienceLevel: String
+    locationCountry: String
+    locationCity: String
+    remoteAvailable: Boolean
+    availability: String
+    previousExperience: [String]
+  ): SavedSearch
+  deleteSavedSearch(savedSearchId: String!): Boolean
+}

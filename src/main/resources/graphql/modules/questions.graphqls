@@ -1,0 +1,58 @@
+type TechnicalQuestion {
+  id: ID!
+  autorId: String!
+  titulo: String!
+  descripcion: String
+  categoria: String
+  etiquetas: [String]
+  nivelDificultad: String
+  estado: String
+  respuestaAceptadaId: String
+  votosCount: Int
+  respuestasCount: Int
+  vistasCount: Int
+  createdAt: String
+}
+
+type TechnicalAnswer {
+  id: ID!
+  preguntaId: String!
+  autorId: String!
+  contenido: String!
+  esAceptada: Boolean
+  votosCount: Int
+  createdAt: String
+}
+
+type QuestionVote {
+  id: ID!
+  usuarioId: String!
+  objetivoId: String!
+  tipoObjetivo: String!
+  valor: Int!
+}
+
+extend type Query {
+  questions(categoria: String, estado: String): [TechnicalQuestion!]!
+  question(id: ID!): TechnicalQuestion
+  answers(questionId: String!): [TechnicalAnswer!]!
+}
+
+extend type Mutation {
+  createQuestion(
+    autorId: String!
+    titulo: String!
+    descripcion: String
+    categoria: String
+    etiquetas: [String]
+    nivelDificultad: String
+  ): TechnicalQuestion
+  createAnswer(
+    preguntaId: String!
+    autorId: String!
+    contenido: String!
+  ): TechnicalAnswer
+  acceptAnswer(answerId: String!, questionId: String!): Boolean
+  voteQuestion(usuarioId: String!, questionId: String!, valor: Int!): QuestionVote
+  voteAnswer(usuarioId: String!, answerId: String!, valor: Int!): QuestionVote
+}

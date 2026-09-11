@@ -1,0 +1,38 @@
+type SupportTicket {
+  id: ID!
+  creadoPorId: String!
+  asunto: String!
+  descripcion: String
+  categoria: String
+  prioridad: String
+  estado: String!
+  asignadoAId: String
+  createdAt: String
+}
+
+type AuditLog {
+  id: ID!
+  actorId: String!
+  accion: String!
+  entidadTipo: String!
+  entidadId: String
+  createdAt: String
+}
+
+extend type Query {
+  supportTickets(estado: String): [SupportTicket!]!
+  myTickets(userId: String!): [SupportTicket!]!
+  ticket(id: ID!): SupportTicket
+}
+
+extend type Mutation {
+  createTicket(
+    creadoPorId: String!
+    asunto: String!
+    descripcion: String
+    categoria: String
+    prioridad: String
+  ): SupportTicket
+  updateTicketStatus(ticketId: String!, estado: String!): SupportTicket
+  assignTicket(ticketId: String!, asignadoAId: String!): SupportTicket
+}

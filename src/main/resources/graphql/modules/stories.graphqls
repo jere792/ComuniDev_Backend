@@ -1,0 +1,47 @@
+type Story {
+  id: ID!
+  autorId: String!
+  contenido: StoryContenido
+  visibilidad: String
+  fechaExpiracion: String
+  vistasCount: Int
+  reaccionesCount: Int
+  estado: String
+  createdAt: String
+}
+
+type StoryContenido {
+  texto: String
+  imagenUrl: String
+  videoUrl: String
+  musica: String
+}
+
+type StoryView {
+  id: ID!
+  storyId: String!
+  viewerId: String!
+  viewedAt: String
+}
+
+extend type Query {
+  stories(userId: String!): [Story!]!
+  story(id: ID!): Story
+  storyViews(storyId: String!): [StoryView!]!
+}
+
+extend type Mutation {
+  createStory(
+    autorId: String!
+    contenido: StoryContenidoInput
+    visibilidad: String
+  ): Story
+  viewStory(storyId: String!, viewerId: String!): StoryView
+}
+
+input StoryContenidoInput {
+  texto: String
+  imagenUrl: String
+  videoUrl: String
+  musica: String
+}

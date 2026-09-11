@@ -1,5 +1,7 @@
 package com.comunidev.comunidevbackend.users.adapter.in.graphql;
 
+import com.comunidev.comunidevbackend.developer_profile.application.port.out.DeveloperProfileRepositoryPort;
+import com.comunidev.comunidevbackend.recruiter_profile.application.port.out.RecruiterProfileRepositoryPort;
 import com.comunidev.comunidevbackend.users.application.dto.UpdateUserRequest;
 import com.comunidev.comunidevbackend.users.application.dto.UserResponse;
 import com.comunidev.comunidevbackend.users.application.port.in.GetUserUseCase;
@@ -20,6 +22,8 @@ public class UserGraphQLResolver {
     private final GetUserUseCase getUserUseCase;
     private final UpdateUserUseCase updateUserUseCase;
     private final UserRepositoryPort userRepositoryPort;
+    private final DeveloperProfileRepositoryPort developerProfileRepositoryPort;
+    private final RecruiterProfileRepositoryPort recruiterProfileRepositoryPort;
 
     @QueryMapping
     public List<UserResponse> users() {
@@ -29,13 +33,22 @@ public class UserGraphQLResolver {
     @QueryMapping
     public UserResponse user(@Argument String id) {
         return getUserUseCase.getUserById(id)
+                .map(response -> {
+                    if ("DEVELOPER".equals(response.getRolActivo())) {
+                        developerProfileRepositoryPort.findByUserId(id)
+                                .ifPresent(response::setDeveloperProfile);
+                    } else if ("RECRUITER".equals(response.getRolActivo())) {
+                        recruiterProfileRepositoryPort.findByUserId(id)
+                                .ifPresent(response::setRecruiterProfile);
+                    }
+                    return response;
+                })
                 .orElse(null);
     }
 
     @QueryMapping
     public UserResponse me() {
         // TODO: obtener userId del JWT token
-        // Por ahora retorna null
         return null;
     }
 
