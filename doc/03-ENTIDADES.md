@@ -17,8 +17,15 @@ Campos recomendados:
   "nombreUsuario": "carlosdev",
   "email": "carlos@correo.com",
   "passwordHash": "hash-seguro",
+  "telefono": "+51XXXXXXXXX",
   "fotoPerfilUrl": "https://...",
   "bannerUrl": "https://...",
+  "bio": "Desarrollador orientado a aplicaciones web y móviles.",
+  "ubicacion": {
+    "pais": "Perú",
+    "ciudad": "Lima",
+    "distrito": "Surco"
+  },
   "roles": ["DEVELOPER"],
   "rolActivo": "DEVELOPER",
   "estadoCuenta": "ACTIVA",
@@ -105,14 +112,6 @@ Campos recomendados:
   "_id": "ObjectId",
   "userId": "ObjectId",
   "tituloProfesional": "Desarrollador Full Stack",
-  "bannerUrl": "https://...",
-  "bio": "Desarrollador orientado a aplicaciones web y móviles.",
-  "ubicacion": {
-    "pais": "Perú",
-    "ciudad": "Lima",
-    "distrito": "Surco",
-    "coordenadas": { "type": "Point", "coordinates": [-76.99, -12.12] }
-  },
   "tecnologias": [
     { "nombre": "Angular", "nivel": "AVANZADO", "aniosExperiencia": 2 },
     { "nombre": "Spring Boot", "nivel": "INTERMEDIO", "aniosExperiencia": 1 }
@@ -202,12 +201,17 @@ Campos recomendados:
 {
   "_id": "ObjectId",
   "userId": "ObjectId",
-  "nombres": "Ana",
-  "apellidos": "López",
   "cargo": "Talent Acquisition Specialist",
-  "bannerUrl": "https://...",
-  "telefono": "+51XXXXXXXXX",
-  "linkedinUrl": "https://linkedin.com/in/...",
+  "ruc": "20123456789",
+  "lema": "Conectando talento con oportunidades",
+  "anioCreacion": 2020,
+  "modalidadTrabajo": "HIBRIDO",
+  "redesSociales": {
+    "linkedin": "https://linkedin.com/in/analopez",
+    "instagram": "https://instagram.com/analopez",
+    "tiktok": "",
+    "facebook": ""
+  },
   "empresas": [
     { "companyId": "ObjectId", "cargoEnEmpresa": "RECRUITER", "activo": true }
   ],
@@ -223,6 +227,9 @@ Campos recomendados:
 - Un reclutador puede pertenecer a una o varias empresas.
 - Solo un reclutador vinculado y autorizado puede crear o gestionar vacantes de una empresa.
 - El reclutador no tiene CV de candidato ni puede postular desde su rol de reclutador.
+- Los campos `nombres`, `apellidos` se eliminaron (ya están en `users.nombre`).
+- El campo `telefono` se movió a `users.telefono`.
+- El campo `linkedinUrl` se movió a `redesSociales.linkedin`.
 
 ---
 

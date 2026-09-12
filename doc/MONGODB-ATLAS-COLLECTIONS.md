@@ -18,8 +18,15 @@ Cuenta central de todo usuario (desarrolladores, reclutadores, moderadores, admi
   "nombreUsuario": "carlosdev",
   "email": "carlos@correo.com",
   "passwordHash": "$2a$10$hashdeejemplo",
+  "telefono": "+51999888777",
   "fotoPerfilUrl": "https://res.cloudinary.com/demo/image/upload/v1/foto.jpg",
   "bannerUrl": "https://res.cloudinary.com/demo/image/upload/v1/banner.jpg",
+  "bio": "Desarrollador orientado a aplicaciones web y moviles.",
+  "ubicacion": {
+    "pais": "Peru",
+    "ciudad": "Lima",
+    "distrito": "Surco"
+  },
   "roles": ["DEVELOPER"],
   "rolActivo": "DEVELOPER",
   "estadoCuenta": "ACTIVA",
@@ -82,17 +89,6 @@ Perfil profesional detallado de un usuario con rol DEVELOPER. Contiene tecnologi
 {
   "userId": {"$oid": "ObjectId_del_usuario"},
   "tituloProfesional": "Desarrollador Full Stack",
-  "bannerUrl": "https://res.cloudinary.com/demo/image/upload/v1/banner.jpg",
-  "bio": "Desarrollador orientado a aplicaciones web y moviles.",
-  "ubicacion": {
-    "pais": "Peru",
-    "ciudad": "Lima",
-    "distrito": "Surco",
-    "coordenadas": {
-      "type": "Point",
-      "coordinates": [-76.99, -12.12]
-    }
-  },
   "tecnologias": [
     {"nombre": "Angular", "nivel": "AVANZADO", "aniosExperiencia": 2},
     {"nombre": "Spring Boot", "nivel": "INTERMEDIO", "aniosExperiencia": 1}
@@ -167,12 +163,17 @@ Perfil profesional de un usuario con rol RECRUITER. Identifica al representante 
 ```json
 {
   "userId": {"$oid": "ObjectId_del_usuario"},
-  "nombres": "Ana",
-  "apellidos": "Lopez",
   "cargo": "Talent Acquisition Specialist",
-  "bannerUrl": "https://res.cloudinary.com/demo/image/upload/v1/banner.jpg",
-  "telefono": "+51999888777",
-  "linkedinUrl": "https://linkedin.com/in/analopez",
+  "ruc": "20123456789",
+  "lema": "Conectando talento con oportunidades",
+  "anioCreacion": 2020,
+  "modalidadTrabajo": "HIBRIDO",
+  "redesSociales": {
+    "linkedin": "https://linkedin.com/in/analopez",
+    "instagram": "https://instagram.com/analopez",
+    "tiktok": "",
+    "facebook": ""
+  },
   "empresas": [
     {"companyId": {"$oid": "ObjectId_empresa"}, "cargoEnEmpresa": "RECRUITER", "activo": true}
   ],

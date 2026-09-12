@@ -34,11 +34,20 @@ public class UpdateUserService implements UpdateUserUseCase {
         if (request.getEmail() != null) {
             user.setEmail(request.getEmail());
         }
+        if (request.getTelefono() != null) {
+            user.setTelefono(request.getTelefono());
+        }
         if (request.getFotoPerfilUrl() != null) {
             user.setFotoPerfilUrl(request.getFotoPerfilUrl());
         }
         if (request.getBannerUrl() != null) {
             user.setBannerUrl(request.getBannerUrl());
+        }
+        if (request.getBio() != null) {
+            user.setBio(request.getBio());
+        }
+        if (request.getUbicacion() != null) {
+            user.setUbicacion(request.getUbicacion());
         }
         if (request.getRolActivo() != null) {
             UserRole rol = UserRole.valueOf(request.getRolActivo());
@@ -58,8 +67,11 @@ public class UpdateUserService implements UpdateUserUseCase {
         response.setNombre(user.getNombre());
         response.setNombreUsuario(user.getNombreUsuario());
         response.setEmail(user.getEmail());
+        response.setTelefono(user.getTelefono());
         response.setFotoPerfilUrl(user.getFotoPerfilUrl());
         response.setBannerUrl(user.getBannerUrl());
+        response.setBio(user.getBio());
+        response.setUbicacion(user.getUbicacion());
         response.setRoles(user.getRoles().stream()
                 .map(UserRole::name)
                 .collect(Collectors.toSet()));

@@ -24,20 +24,20 @@ public class RecruiterProfileGraphQLResolver {
     @MutationMapping
     public RecruiterProfile createRecruiterProfile(
             @Argument String userId,
-            @Argument String nombres,
-            @Argument String apellidos,
-            @Argument String bio,
             @Argument String cargo,
-            @Argument String telefono,
-            @Argument String linkedinUrl) {
+            @Argument String ruc,
+            @Argument String lema,
+            @Argument Integer anioCreacion,
+            @Argument String modalidadTrabajo,
+            @Argument RecruiterProfile.RedesSociales redesSociales) {
 
         RecruiterProfile profile = RecruiterProfile.create(userId);
-        profile.setNombres(nombres);
-        profile.setApellidos(apellidos);
-        profile.setBio(bio);
         profile.setCargo(cargo);
-        profile.setTelefono(telefono);
-        profile.setLinkedinUrl(linkedinUrl);
+        profile.setRuc(ruc);
+        profile.setLema(lema);
+        profile.setAnioCreacion(anioCreacion);
+        profile.setModalidadTrabajo(modalidadTrabajo);
+        profile.setRedesSociales(redesSociales);
 
         return recruiterProfileRepositoryPort.save(profile);
     }
@@ -45,23 +45,21 @@ public class RecruiterProfileGraphQLResolver {
     @MutationMapping
     public RecruiterProfile updateRecruiterProfile(
             @Argument String id,
-            @Argument String nombres,
-            @Argument String apellidos,
-            @Argument String bio,
             @Argument String cargo,
-            @Argument String bannerUrl,
-            @Argument String telefono,
-            @Argument String linkedinUrl) {
+            @Argument String ruc,
+            @Argument String lema,
+            @Argument Integer anioCreacion,
+            @Argument String modalidadTrabajo,
+            @Argument RecruiterProfile.RedesSociales redesSociales) {
 
         return mongoRepository.findById(id)
                 .map(profile -> {
-                    if (nombres != null) profile.setNombres(nombres);
-                    if (apellidos != null) profile.setApellidos(apellidos);
-                    if (bio != null) profile.setBio(bio);
                     if (cargo != null) profile.setCargo(cargo);
-                    if (bannerUrl != null) profile.setBannerUrl(bannerUrl);
-                    if (telefono != null) profile.setTelefono(telefono);
-                    if (linkedinUrl != null) profile.setLinkedinUrl(linkedinUrl);
+                    if (ruc != null) profile.setRuc(ruc);
+                    if (lema != null) profile.setLema(lema);
+                    if (anioCreacion != null) profile.setAnioCreacion(anioCreacion);
+                    if (modalidadTrabajo != null) profile.setModalidadTrabajo(modalidadTrabajo);
+                    if (redesSociales != null) profile.setRedesSociales(redesSociales);
                     profile.setUpdatedAt(java.time.Instant.now());
                     return recruiterProfileRepositoryPort.save(profile);
                 })

@@ -7,6 +7,7 @@ import com.comunidev.comunidevbackend.users.application.dto.UserResponse;
 import com.comunidev.comunidevbackend.users.application.port.in.GetUserUseCase;
 import com.comunidev.comunidevbackend.users.application.port.in.UpdateUserUseCase;
 import com.comunidev.comunidevbackend.users.application.port.out.UserRepositoryPort;
+import com.comunidev.comunidevbackend.users.domain.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
@@ -58,15 +59,21 @@ public class UserGraphQLResolver {
             @Argument String nombre,
             @Argument String nombreUsuario,
             @Argument String email,
+            @Argument String telefono,
             @Argument String fotoPerfilUrl,
-            @Argument String bannerUrl) {
+            @Argument String bannerUrl,
+            @Argument String bio,
+            @Argument User.Ubicacion ubicacion) {
         
         UpdateUserRequest request = new UpdateUserRequest();
         request.setNombre(nombre);
         request.setNombreUsuario(nombreUsuario);
         request.setEmail(email);
+        request.setTelefono(telefono);
         request.setFotoPerfilUrl(fotoPerfilUrl);
         request.setBannerUrl(bannerUrl);
+        request.setBio(bio);
+        request.setUbicacion(ubicacion);
         
         return updateUserUseCase.updateUser(id, request);
     }

@@ -1,13 +1,12 @@
 type RecruiterProfile {
   id: ID!
   userId: String!
-  nombres: String
-  apellidos: String
-  bio: String
   cargo: String
-  bannerUrl: String
-  telefono: String
-  linkedinUrl: String
+  ruc: String
+  lema: String
+  anioCreacion: Int
+  modalidadTrabajo: ModalidadTrabajo
+  redesSociales: RedesSociales
   empresas: [RecruiterEmpresa]
   verificado: Boolean
 }
@@ -18,6 +17,26 @@ type RecruiterEmpresa {
   activo: Boolean
 }
 
+type RedesSociales {
+  linkedin: String
+  instagram: String
+  tiktok: String
+  facebook: String
+}
+
+enum ModalidadTrabajo {
+  PRESENCIAL
+  HIBRIDO
+  VIRTUAL
+}
+
+input RedesSocialesInput {
+  linkedin: String
+  instagram: String
+  tiktok: String
+  facebook: String
+}
+
 extend type Query {
   recruiterProfile(userId: String!): RecruiterProfile
   myRecruiterProfile: RecruiterProfile
@@ -26,21 +45,20 @@ extend type Query {
 extend type Mutation {
   createRecruiterProfile(
     userId: String!
-    nombres: String
-    apellidos: String
-    bio: String
     cargo: String
-    telefono: String
-    linkedinUrl: String
+    ruc: String
+    lema: String
+    anioCreacion: Int
+    modalidadTrabajo: ModalidadTrabajo
+    redesSociales: RedesSocialesInput
   ): RecruiterProfile
   updateRecruiterProfile(
     id: ID!
-    nombres: String
-    apellidos: String
-    bio: String
     cargo: String
-    bannerUrl: String
-    telefono: String
-    linkedinUrl: String
+    ruc: String
+    lema: String
+    anioCreacion: Int
+    modalidadTrabajo: ModalidadTrabajo
+    redesSociales: RedesSocialesInput
   ): RecruiterProfile
 }

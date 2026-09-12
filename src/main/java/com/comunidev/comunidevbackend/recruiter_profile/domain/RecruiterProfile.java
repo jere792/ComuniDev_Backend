@@ -14,17 +14,25 @@ import java.util.List;
 @Document(collection = "recruiter_profiles")
 public class RecruiterProfile extends AggregateRoot<String> {
     private String userId;
-    private String nombres;
-    private String apellidos;
-    private String bio;
     private String cargo;
-    private String bannerUrl;
-    private String telefono;
-    private String linkedinUrl;
+    private String ruc;
+    private String lema;
+    private Integer anioCreacion;
+    private String modalidadTrabajo;
+    private RedesSociales redesSociales;
     private List<Empresa> empresas = new ArrayList<>();
     private Boolean verificado = false;
     private Instant createdAt;
     private Instant updatedAt;
+
+    @Getter
+    @Setter
+    public static class RedesSociales {
+        private String linkedin;
+        private String instagram;
+        private String tiktok;
+        private String facebook;
+    }
 
     @Getter
     @Setter

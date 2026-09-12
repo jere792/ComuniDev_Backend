@@ -4,9 +4,13 @@ import com.comunidev.comunidevbackend.talent_search.application.dto.DeveloperPro
 import com.comunidev.comunidevbackend.talent_search.application.dto.TalentSearchRequest;
 import com.comunidev.comunidevbackend.talent_search.application.port.out.DeveloperSearchPort;
 import lombok.RequiredArgsConstructor;
+import org.bson.Document;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.aggregation.AggregationResults;
+import org.springframework.data.mongodb.core.aggregation.LookupOperation;
+import org.springframework.data.mongodb.core.aggregation.MatchOperation;
 import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -20,18 +24,10 @@ public class MongoDeveloperSearchAdapter implements DeveloperSearchPort {
 
     @Override
     public List<DeveloperProfileResponse> searchDevelopers(TalentSearchRequest request) {
-        Query query = buildSearchQuery(request);
-        query.limit(request.getSize() != null ? request.getSize() : 20);
+        List<org.springframework.data.mongodb.core.aggregation.AggregationOperation> operations = new ArrayList<>();
 
-        if (request.getPage() != null && request.getSize() != null) {
-            query.skip((long) request.getPage() * request.getSize());
-        }
+        operations.add(Aggregation.lookup("users", "userId", "_id", "user_data"));
 
-        return mongoTemplate.find(query, DeveloperProfileResponse.class, "developer_profiles");
-    }
-
-    private Query buildSearchQuery(TalentSearchRequest request) {
-        Query query = new Query();
         List<Criteria> criteriaList = new ArrayList<>();
 
         if (request.getTechnologies() != null && !request.getTechnologies().isEmpty()) {
@@ -43,11 +39,11 @@ public class MongoDeveloperSearchAdapter implements DeveloperSearchPort {
         }
 
         if (request.getLocationCountry() != null && !request.getLocationCountry().isBlank()) {
-            criteriaList.add(Criteria.where("ubicacion.pais").is(request.getLocationCountry()));
+            criteriaList.add(Criteria.where("user_data.ubicacion.pais").is(request.getLocationCountry()));
         }
 
         if (request.getLocationCity() != null && !request.getLocationCity().isBlank()) {
-            criteriaList.add(Criteria.where("ubicacion.ciudad").is(request.getLocationCity()));
+            criteriaList.add(Criteria.where("user_data.ubicacion.ciudad").is(request.getLocationCity()));
         }
 
         if (request.getRemoteAvailable() != null && request.getRemoteAvailable()) {
@@ -59,9 +55,44 @@ public class MongoDeveloperSearchAdapter implements DeveloperSearchPort {
         }
 
         if (!criteriaList.isEmpty()) {
-            query.addCriteria(new Criteria().andOperator(criteriaList.toArray(new Criteria[0])));
+            operations.add(Aggregation.match(new Criteria().andOperator(criteriaList.toArray(new Criteria[0]))));
         }
 
-        return query;
+        int limit = request.getSize() != null ? request.getSize() : 20;
+        operations.add(Aggregation.limit(limit));
+
+        if (request.getPage() != null && request.getSize() != null) {
+            operations.add(Aggregation.skip((long) request.getPage() * request.getSize()));
+        }
+
+        Aggregation aggregation = Aggregation.newAggregation(operations);
+        AggregationResults<Document> results = mongoTemplate.aggregate(aggregation, "developer_profiles", Document.class);
+
+        return results.getMappedResults().stream()
+                .map(this::mapToResponse)
+                .toList();
+    }
+
+    private DeveloperProfileResponse mapToResponse(Document doc) {
+        DeveloperProfileResponse response = new DeveloperProfileResponse();
+        response.setTituloProfesional(doc.getString("tituloProfesional"));
+
+        @SuppressWarnings("unchecked")
+        List<Document> user_data = (List<Document>) doc.get("user_data");
+        if (user_data != null && !user_data.isEmpty()) {
+            Document user = user_data.get(0);
+            response.setNombre(user.getString("nombre"));
+            response.setNombreUsuario(user.getString("nombreUsuario"));
+            response.setFotoPerfilUrl(user.getString("fotoPerfilUrl"));
+            response.setBio(user.getString("bio"));
+            @SuppressWarnings("unchecked")
+            Document ubicacion = (Document) user.get("ubicacion");
+            if (ubicacion != null) {
+                response.setUbicacionPais(ubicacion.getString("pais"));
+                response.setUbicacionCiudad(ubicacion.getString("ciudad"));
+            }
+        }
+
+        return response;
     }
 }

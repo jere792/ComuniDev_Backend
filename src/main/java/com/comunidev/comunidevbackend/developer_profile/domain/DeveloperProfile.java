@@ -15,9 +15,6 @@ import java.util.List;
 public class DeveloperProfile extends AggregateRoot<String> {
     private String userId;
     private String tituloProfesional;
-    private String bannerUrl;
-    private String bio;
-    private Ubicacion ubicacion;
     private List<Tecnologia> tecnologias = new ArrayList<>();
     private List<String> habilidadesBlandas = new ArrayList<>();
     private List<Experiencia> experiencias = new ArrayList<>();
@@ -29,14 +26,6 @@ public class DeveloperProfile extends AggregateRoot<String> {
     private Enlaces enlaces;
     private Instant createdAt;
     private Instant updatedAt;
-
-    @Getter
-    @Setter
-    public static class Ubicacion {
-        private String pais;
-        private String ciudad;
-        private String distrito;
-    }
 
     @Getter
     @Setter

@@ -2,9 +2,6 @@ type DeveloperProfile {
   id: ID!
   userId: String!
   tituloProfesional: String
-  bannerUrl: String
-  bio: String
-  ubicacion: DeveloperUbicacion
   tecnologias: [Tecnologia]
   habilidadesBlandas: [String]
   experiencias: [Experiencia]
@@ -14,12 +11,6 @@ type DeveloperProfile {
   cv: CV
   disponibilidadLaboral: DeveloperDisponibilidad
   enlaces: DeveloperEnlaces
-}
-
-type DeveloperUbicacion {
-  pais: String
-  ciudad: String
-  distrito: String
 }
 
 type Tecnologia {
@@ -85,8 +76,6 @@ extend type Mutation {
   createDeveloperProfile(
     userId: String!
     tituloProfesional: String
-    bio: String
-    ubicacion: DeveloperUbicacionInput
     tecnologias: [TecnologiaInput]
     habilidadesBlandas: [String]
     disponibilidadLaboral: DeveloperDisponibilidadInput
@@ -95,19 +84,11 @@ extend type Mutation {
   updateDeveloperProfile(
     id: ID!
     tituloProfesional: String
-    bio: String
-    ubicacion: DeveloperUbicacionInput
     tecnologias: [TecnologiaInput]
     habilidadesBlandas: [String]
     disponibilidadLaboral: DeveloperDisponibilidadInput
     enlaces: DeveloperEnlacesInput
   ): DeveloperProfile
-}
-
-input DeveloperUbicacionInput {
-  pais: String
-  ciudad: String
-  distrito: String
 }
 
 input TecnologiaInput {

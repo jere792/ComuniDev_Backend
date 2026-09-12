@@ -2,6 +2,7 @@ package com.comunidev.comunidevbackend.users.application.dto;
 
 import com.comunidev.comunidevbackend.developer_profile.domain.DeveloperProfile;
 import com.comunidev.comunidevbackend.recruiter_profile.domain.RecruiterProfile;
+import com.comunidev.comunidevbackend.users.domain.User;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -29,11 +30,20 @@ public class UserResponse {
     @Schema(description = "Email", example = "carlos@correo.com")
     private String email;
 
+    @Schema(description = "Phone number", example = "+51999888777")
+    private String telefono;
+
     @Schema(description = "Profile picture URL")
     private String fotoPerfilUrl;
 
     @Schema(description = "Banner URL")
     private String bannerUrl;
+
+    @Schema(description = "User bio")
+    private String bio;
+
+    @Schema(description = "User location")
+    private User.Ubicacion ubicacion;
 
     @Schema(description = "User roles")
     private Set<String> roles;

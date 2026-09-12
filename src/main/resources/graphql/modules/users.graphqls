@@ -3,8 +3,11 @@ type User {
   nombre: String!
   nombreUsuario: String!
   email: String!
+  telefono: String
   fotoPerfilUrl: String
   bannerUrl: String
+  bio: String
+  ubicacion: UserUbicacion
   roles: [String!]!
   rolActivo: String
   estadoCuenta: String!
@@ -15,6 +18,12 @@ type User {
   createdAt: String
   developerProfile: DeveloperProfile
   recruiterProfile: RecruiterProfile
+}
+
+type UserUbicacion {
+  pais: String
+  ciudad: String
+  distrito: String
 }
 
 extend type Query {
@@ -29,8 +38,17 @@ extend type Mutation {
     nombre: String
     nombreUsuario: String
     email: String
+    telefono: String
     fotoPerfilUrl: String
     bannerUrl: String
+    bio: String
+    ubicacion: UserUbicacionInput
   ): User
   deleteUser(id: ID!): Boolean
+}
+
+input UserUbicacionInput {
+  pais: String
+  ciudad: String
+  distrito: String
 }
