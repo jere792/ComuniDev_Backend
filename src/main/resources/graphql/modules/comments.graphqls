@@ -14,6 +14,7 @@ type Comment {
 extend type Query {
   comments(contentId: String!, contentType: String!): [Comment!]!
   comment(id: ID!): Comment
+  commentReplies(parentCommentId: String!): [Comment!]!
 }
 
 extend type Mutation {

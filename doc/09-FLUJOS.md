@@ -567,3 +567,237 @@
 - Solo empresas con `vacantesActivasCount > 0` aparecen en el mapa.
 - Filtrar por ubicación, tecnología, modalidad, nivel de experiencia.
 - Las coordenadas deben ser válidas (GeoJSON 2dsphere).
+
+---
+
+## 12. Social Feed — Seguimiento
+
+```
+┌─────────────┐     ┌──────────────┐     ┌─────────────┐
+│  Seguir     │────▶│  Validar     │────▶│  Crear      │
+│  usuario    │     │  (no propio, │     │  follow     │
+│             │     │  no duplicado)│    │             │
+└─────────────┘     └──────────────┘     └─────────────┘
+                                                │
+                                                ▼
+                                         ┌──────────────┐
+                                         │  Actualizar  │
+                                         │  contadores  │
+                                         │  seguidores/ │
+                                         │  siguiendo   │
+                                         └──────────────┘
+```
+
+**Reglas:**
+- No puede seguirse a sí mismo.
+- No puede existir follow duplicado (`followerId` + `followingId` unique).
+- `isFollowing(userId)` retorna boolean para verificar relación.
+- El feed prioriza posts de seguidos primero.
+
+---
+
+## 13. Social Feed — Publicaciones
+
+### Crear post
+
+```
+┌─────────────┐     ┌──────────────┐     ┌─────────────┐     ┌──────────────┐
+│  Crear post │────▶│  Subir       │────▶│  Guardar    │────▶│  Retornar    │
+│  (texto +   │     │  imagen a    │     │  post en    │     │  post creado │
+│  imagen)    │     │  Cloudinary  │     │  MongoDB    │     │              │
+└─────────────┘     └──────────────┘     └─────────────┘     └──────────────┘
+```
+
+### Feed paginado
+
+```
+┌─────────────┐     ┌──────────────┐     ┌─────────────┐     ┌──────────────┐
+│  Solicitar  │────▶│  Obtener     │────▶│  Mezclar    │────▶│  Retornar    │
+│  feed       │     │  posts de    │     │  seguidos   │     │  posts +     │
+│  (page,     │     │  seguidos +  │     │  primero,   │     │  paginación  │
+│  size)      │     │  resto       │     │  resto      │     │              │
+└─────────────┘     └──────────────┘     └─────────────┘     └──────────────┘
+```
+
+**Estructura de respuesta:**
+
+```json
+{
+  "posts": [...],
+  "page": 0,
+  "size": 20,
+  "totalElements": 100,
+  "totalPages": 5,
+  "last": false
+}
+```
+
+**Reglas:**
+- Debe tener texto o al menos una imagen.
+- Las imágenes se suben a Cloudinary; MongoDB guarda URLs.
+- `estadisticas` se actualiza con contadores denormalizados.
+- Feed ordenado por: posts de seguidos (prioridad) → resto, paginado.
+
+---
+
+## 14. Social Feed — Comentarios
+
+### Comentarios de nivel superior
+
+```
+┌─────────────┐     ┌──────────────┐     ┌─────────────┐
+│  Crear      │────▶│  Validar     │────▶│  Guardar    │
+│  comentario │     │  (texto no   │     │  comentario │
+│             │     │  vacío)      │     │  (postId,   │
+│             │     │              │     │  autorId)   │
+└─────────────┘     └──────────────┘     └─────────────┘
+                                                │
+                                                ▼
+                                         ┌──────────────┐
+                                         │  Actualizar  │
+                                         │  comentarios │
+                                         │  Count en    │
+                                         │  post        │
+                                         └──────────────┘
+```
+
+### Respuestas (comentarios anidados)
+
+```
+┌─────────────┐     ┌──────────────┐     ┌─────────────┐
+│  Responder  │────▶│  Validar     │────▶│  Guardar    │
+│  comentario │     │  (parent     │     │  reply      │
+│             │     │  comment     │     │  (con       │
+│             │     │  existe)     │     │  parent)    │
+└─────────────┘     └──────────────┘     └─────────────┘
+```
+
+**Reglas:**
+- Un comentario pertenece a un `postId` (tipo: POST, REEL, etc.).
+- `parentCommentId` es `null` para topLevel, `objectId` para replies.
+- `commentReplies(parentCommentId)` retorna solo respuestas directas.
+- Se puede editar y eliminar comentarios propios.
+
+---
+
+## 15. Social Feed — Reacciones
+
+```
+┌─────────────┐     ┌──────────────┐     ┌─────────────┐
+│  Reaccionar │────▶│  Verificar   │────▶│  Upsert     │
+│  (tipo:     │     │  si ya tiene │     │  reacción   │
+│  LIKE/LOVE/ │     │  reacción    │     │  (tipo)     │
+│  CELEBRATE/ │     │  previa      │     │             │
+│  SUPPORT)   │     │              │     │             │
+└─────────────┘     └──────────────┘     └─────────────┘
+                                                │
+                               ┌────────────────┘
+                               ▼
+                        ┌──────────────┐     ┌─────────────┐
+                        │  Actualizar  │────▶│  Retornar   │
+                        │  contadores  │     │  miReacción │
+                        │  denorm.     │     │  actualizada│
+                        │  (reacciones │     │             │
+                        │  Count)      │     │             │
+                        └──────────────┘     └─────────────┘
+```
+
+**Operaciones:**
+
+| Mutation | Descripción |
+|----------|-------------|
+| `react` | Crea o cambia reacción (si no existe, crea; si existe, cambia tipo) |
+| `unreact` | Elimina reacción del usuario |
+| `changeReaction` | Cambia tipo de reacción existente |
+| `myReaction` | Retorna la reacción del usuario actual para un contenido |
+
+**Reglas:**
+- Una reacción por usuario por contenido (unique: `usuarioId + contenidoId + tipoContenido`).
+- `TipoReaccion`: LIKE, LOVE, CELEBRATE, SUPPORT.
+- Se aplica a: POST, COMMENT, REEL.
+- Contadores `reaccionesCount` se incrementan/decrementan automáticamente.
+
+---
+
+## 16. Stories
+
+### Crear story
+
+```
+┌─────────────┐     ┌──────────────┐     ┌─────────────┐     ┌──────────────┐
+│  Crear      │────▶│  Subir       │────▶│  Guardar    │────▶│  Retornar    │
+│  story      │     │  media a     │     │  story      │     │  story       │
+│  (texto,    │     │  Cloudinary  │     │  (expiresAt │     │  creada      │
+│  imagen,    │     │              │     │  =now+24h)  │     │              │
+│  video)     │     │              │     │             │     │              │
+└─────────────┘     └──────────────┘     └─────────────┘     └──────────────┘
+```
+
+### Consultar stories
+
+```
+┌─────────────┐     ┌──────────────┐     ┌─────────────┐
+│  Solicitar  │────▶│  Filtrar     │────▶│  Retornar   │
+│  stories    │     │  seguidos +  │     │  stories    │
+│             │     │  no expiradas│     │  (24h vigentes)│
+│             │     │  (< now)     │     │             │
+└─────────────┘     └──────────────┘     └─────────────┘
+```
+
+**Reglas:**
+- Expiran automáticamente después de 24 horas (`expiresAt = createdAt + 24h`).
+- Solo se muestran stories de usuarios seguidos.
+- `storyViews` registra quién vio la story.
+- `viewStory(storyId, usuarioId)` registra visualización.
+- Las stories pueden ser de tipo: TEXT, IMAGE, VIDEO.
+
+---
+
+## 17. Reels
+
+### Crear reel
+
+```
+┌─────────────┐     ┌──────────────┐     ┌─────────────┐
+│  Crear reel │────▶│  Validar     │────▶│  Guardar    │
+│  (videoUrl, │     │  (videoUrl   │     │  reel en    │
+│  descripción│     │  requerido)  │     │  MongoDB    │
+│  etiquetas) │     │              │     │             │
+└─────────────┘     └──────────────┘     └─────────────┘
+                                                │
+                                                ▼
+                                         ┌──────────────┐
+                                         │  Retornar    │
+                                         │  reel creado │
+                                         └──────────────┘
+```
+
+### Consultar reels
+
+```
+┌─────────────┐     ┌──────────────┐     ┌─────────────┐
+│  Solicitar  │────▶│  Obtener     │────▶│  Retornar   │
+│  reels      │     │  todos los   │     │  reels[]    │
+│             │     │  reels       │     │  con stats  │
+│             │     │  (feed)      │     │             │
+└─────────────┘     └──────────────┘     └─────────────┘
+```
+
+**Campos del reel:**
+
+| Campo | Tipo | Descripción |
+|-------|------|-------------|
+| videoUrl | String | URL del video (Cloudinary) |
+| descripcion | String? | Descripción del reel |
+| etiquetas | String[]? | Etiquetas/hashags |
+| musicNombre | String? | Nombre de la música |
+| musicUrl | String? | URL del audio |
+| estadisticas | ReelEstadisticas | reaccionesCount, comentariosCount, vistasCount, compartidosCount |
+
+**Reglas:**
+- `videoUrl` es obligatorio.
+- Los reels se muestran en orden cronológico (más reciente primero).
+- Los comentarios de reels se almacenan como `tipoContenido = REEL`.
+- Las reacciones de reels se almacenan como `tipoContenido = REEL`.
+- `reelsByUser(autorId)` retorna reels de un usuario específico.
+- CRUD completo: crear, editar, eliminar (solo autor).

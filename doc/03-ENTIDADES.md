@@ -21,10 +21,14 @@ Campos recomendados:
   "fotoPerfilUrl": "https://...",
   "bannerUrl": "https://...",
   "bio": "Desarrollador orientado a aplicaciones web y móviles.",
+  "sitioWeb": "https://miportafolio.pe",
   "ubicacion": {
     "pais": "Perú",
+    "departamento": "Lima",
+    "provincia": "Lima",
     "ciudad": "Lima",
-    "distrito": "Surco"
+    "distrito": "Surco",
+    "direccion": "Av. Ejemplo 123"
   },
   "roles": ["DEVELOPER"],
   "rolActivo": "DEVELOPER",
@@ -204,7 +208,8 @@ Campos recomendados:
   "cargo": "Talent Acquisition Specialist",
   "ruc": "20123456789",
   "lema": "Conectando talento con oportunidades",
-  "anioCreacion": 2020,
+  "empresasDescripcion": "Trabajo con empresas del sector fintech y retail.",
+  "fechaCreacion": "2020",
   "modalidadTrabajo": "HIBRIDO",
   "redesSociales": {
     "linkedin": "https://linkedin.com/in/analopez",
@@ -230,6 +235,13 @@ Campos recomendados:
 - Los campos `nombres`, `apellidos` se eliminaron (ya están en `users.nombre`).
 - El campo `telefono` se movió a `users.telefono`.
 - El campo `linkedinUrl` se movió a `redesSociales.linkedin`.
+- El campo `anioCreacion` (Int) fue migrado a `fechaCreacion` (String) para soportar fecha completa.
+- El campo `empresasDescripcion` guarda la descripción en texto libre de las empresas con las que trabaja el reclutador (separado de `lema`).
+- `createRecruiterProfile` aplica upsert: si ya existe un perfil para el `userId`, actualiza los campos enviados en lugar de crear un duplicado.
+
+**Índices sugeridos:**
+
+- Único: `userId` (implementado con `@Indexed(unique = true)`).
 
 ---
 
@@ -615,7 +627,9 @@ Esta separación es importante porque una persona puede querer permitir que otro
 
 **Valores de tipoObjetivo:** POST, REEL, STORY, COMMENT, TECHNICAL_ANSWER.
 
-**Valores de tipoReaccion:** LIKE, LOVE, INSIGHTFUL, CELEBRATE, FIRE, SUPPORT.
+**Valores de tipoReaccion (implementado como enum GraphQL `TipoReaccion`):** LIKE, LOVE, CELEBRATE, SUPPORT.
+
+**Nota:** futuras versiones pueden agregar INSIGHTFUL o FIRE al enum.
 
 **Reglas principales:**
 

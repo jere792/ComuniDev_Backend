@@ -57,6 +57,10 @@ public class GetUserService implements GetUserUseCase {
         response.setRolActivo(user.getRolActivo() != null ? user.getRolActivo().name() : null);
         response.setEstadoCuenta(user.getEstadoCuenta() != null ? user.getEstadoCuenta().name() : null);
         response.setEmailVerificado(user.getEmailVerificado());
+        response.setTelefono(user.getTelefono());
+        response.setBio(user.getBio());
+        response.setSitioWeb(user.getSitioWeb());
+        response.setUbicacion(user.getUbicacion());
         response.setSeguidoresCount(user.getSeguidoresCount());
         response.setSiguiendoCount(user.getSiguiendoCount());
         response.setConexionesCount(user.getConexionesCount());

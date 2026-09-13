@@ -32,7 +32,7 @@ type PostEstadisticas {
 extend type Query {
   posts: [Post!]!
   post(id: ID!): Post
-  feed(userId: String!): [Post!]!
+  feed(userId: String!, page: Int, size: Int): [Post!]!
 }
 
 extend type Mutation {

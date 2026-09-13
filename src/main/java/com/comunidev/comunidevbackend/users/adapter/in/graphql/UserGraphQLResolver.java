@@ -63,6 +63,7 @@ public class UserGraphQLResolver {
             @Argument String fotoPerfilUrl,
             @Argument String bannerUrl,
             @Argument String bio,
+            @Argument String sitioWeb,
             @Argument User.Ubicacion ubicacion) {
         
         UpdateUserRequest request = new UpdateUserRequest();
@@ -73,9 +74,41 @@ public class UserGraphQLResolver {
         request.setFotoPerfilUrl(fotoPerfilUrl);
         request.setBannerUrl(bannerUrl);
         request.setBio(bio);
+        request.setSitioWeb(sitioWeb);
         request.setUbicacion(ubicacion);
         
         return updateUserUseCase.updateUser(id, request);
+    }
+
+    @MutationMapping
+    public UserResponse updateNotificationPreferences(
+            @Argument String userId,
+            @Argument User.NotificationConfig preferences) {
+        
+        User user = userRepositoryPort.findById(userId)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        
+        if (user.getConfiguracion() == null) {
+            user.setConfiguracion(new User.UserConfiguration());
+        }
+        if (user.getConfiguracion().getNotificaciones() == null) {
+            user.getConfiguracion().setNotificaciones(new User.NotificationConfig());
+        }
+        
+        User.NotificationConfig current = user.getConfiguracion().getNotificaciones();
+        if (preferences.getEmail() != null) current.setEmail(preferences.getEmail());
+        if (preferences.getPush() != null) current.setPush(preferences.getPush());
+        if (preferences.getMensajes() != null) current.setMensajes(preferences.getMensajes());
+        if (preferences.getComentarios() != null) current.setComentarios(preferences.getComentarios());
+        if (preferences.getReacciones() != null) current.setReacciones(preferences.getReacciones());
+        if (preferences.getConexiones() != null) current.setConexiones(preferences.getConexiones());
+        if (preferences.getVacantes() != null) current.setVacantes(preferences.getVacantes());
+        
+        user.setUpdatedAt(java.time.Instant.now());
+        userRepositoryPort.save(user);
+        
+        // Return updated user
+        return getUserUseCase.getUserById(userId).orElse(null);
     }
 
     @MutationMapping

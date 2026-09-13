@@ -46,6 +46,9 @@ public class UpdateUserService implements UpdateUserUseCase {
         if (request.getBio() != null) {
             user.setBio(request.getBio());
         }
+        if (request.getSitioWeb() != null) {
+            user.setSitioWeb(request.getSitioWeb());
+        }
         if (request.getUbicacion() != null) {
             user.setUbicacion(request.getUbicacion());
         }
@@ -71,6 +74,7 @@ public class UpdateUserService implements UpdateUserUseCase {
         response.setFotoPerfilUrl(user.getFotoPerfilUrl());
         response.setBannerUrl(user.getBannerUrl());
         response.setBio(user.getBio());
+        response.setSitioWeb(user.getSitioWeb());
         response.setUbicacion(user.getUbicacion());
         response.setRoles(user.getRoles().stream()
                 .map(UserRole::name)

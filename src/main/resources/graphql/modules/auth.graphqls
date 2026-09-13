@@ -5,4 +5,5 @@ type AuthPayload {
 
 extend type Mutation {
   login(email: String!, password: String!): AuthPayload
+  changePassword(userId: ID!, currentPassword: String!, newPassword: String!): Boolean
 }

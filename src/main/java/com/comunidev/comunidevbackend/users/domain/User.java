@@ -21,6 +21,7 @@ public class User extends AggregateRoot<String> {
     private String fotoPerfilUrl;
     private String bannerUrl;
     private String bio;
+    private String sitioWeb;
     private Ubicacion ubicacion;
     private Set<UserRole> roles = new HashSet<>();
     private UserRole rolActivo;
@@ -39,8 +40,11 @@ public class User extends AggregateRoot<String> {
     @Setter
     public static class Ubicacion {
         private String pais;
+        private String departamento;
+        private String provincia;
         private String ciudad;
         private String distrito;
+        private String direccion;
     }
 
     @Getter

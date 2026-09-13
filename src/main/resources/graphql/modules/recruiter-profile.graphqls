@@ -4,7 +4,8 @@ type RecruiterProfile {
   cargo: String
   ruc: String
   lema: String
-  anioCreacion: Int
+  empresasDescripcion: String
+  fechaCreacion: String
   modalidadTrabajo: ModalidadTrabajo
   redesSociales: RedesSociales
   empresas: [RecruiterEmpresa]
@@ -48,7 +49,8 @@ extend type Mutation {
     cargo: String
     ruc: String
     lema: String
-    anioCreacion: Int
+    empresasDescripcion: String
+    fechaCreacion: String
     modalidadTrabajo: ModalidadTrabajo
     redesSociales: RedesSocialesInput
   ): RecruiterProfile
@@ -57,7 +59,8 @@ extend type Mutation {
     cargo: String
     ruc: String
     lema: String
-    anioCreacion: Int
+    empresasDescripcion: String
+    fechaCreacion: String
     modalidadTrabajo: ModalidadTrabajo
     redesSociales: RedesSocialesInput
   ): RecruiterProfile

@@ -22,10 +22,14 @@ Cuenta central de todo usuario (desarrolladores, reclutadores, moderadores, admi
   "fotoPerfilUrl": "https://res.cloudinary.com/demo/image/upload/v1/foto.jpg",
   "bannerUrl": "https://res.cloudinary.com/demo/image/upload/v1/banner.jpg",
   "bio": "Desarrollador orientado a aplicaciones web y moviles.",
+  "sitioWeb": "https://miportafolio.pe",
   "ubicacion": {
     "pais": "Peru",
+    "departamento": "Lima",
+    "provincia": "Lima",
     "ciudad": "Lima",
-    "distrito": "Surco"
+    "distrito": "Surco",
+    "direccion": "Av. Ejemplo 123"
   },
   "roles": ["DEVELOPER"],
   "rolActivo": "DEVELOPER",
@@ -166,7 +170,8 @@ Perfil profesional de un usuario con rol RECRUITER. Identifica al representante 
   "cargo": "Talent Acquisition Specialist",
   "ruc": "20123456789",
   "lema": "Conectando talento con oportunidades",
-  "anioCreacion": 2020,
+  "empresasDescripcion": "Trabajo con empresas del sector fintech y retail.",
+  "fechaCreacion": "2020",
   "modalidadTrabajo": "HIBRIDO",
   "redesSociales": {
     "linkedin": "https://linkedin.com/in/analopez",
@@ -182,6 +187,8 @@ Perfil profesional de un usuario con rol RECRUITER. Identifica al representante 
   "updatedAt": ISODate( "2026-01-15T10:00:00Z")
 }
 ```
+
+> **Nota:** `anioCreacion` (Int) fue migrado a `fechaCreacion` (String). `empresasDescripcion` es un campo nuevo para la descripcion en texto libre de las empresas del reclutador. El indice unico sobre `userId` evita perfiles duplicados.
 
 ---
 
@@ -1143,6 +1150,28 @@ Entidad de prueba para verificar la conexion a MongoDB.
 
 ---
 
+## 12. Modulos ya implementados (colecciones creadas por el backend)
+
+Estas colecciones son creadas y gestionadas automaticamente por Spring Data MongoDB al ejecutar el backend. No es necesario crearlas manualmente en Atlas:
+
+| Coleccion | Modulo Java | Operaciones GraphQL disponibles |
+|-----------|-------------|--------------------------------|
+| `follows` | `follow` | `follow`, `unfollow`, `followers`, `following`, `isFollowing` |
+| `posts` | `post` | `posts`, `post`, `feed` (paginado, con prioridad a personas seguidas), `createPost`, `updatePost`, `deletePost` |
+| `comments` | `comment` | `comments`, `commentReplies`, `comment`, `createComment`, `updateComment`, `deleteComment` |
+| `reactions` | `reaction` | `reactions`, `myReaction`, `react`, `unreact`, `changeReaction` |
+| `stories` | `story` | `stories` (activas de seguidos, 24h), `story`, `createStory`, `deleteStory` |
+| `story_views` | `story` | `storyViews`, `viewStory` |
+| `recruiter_profiles` | `recruiter_profile` | `recruiterProfile`, `createRecruiterProfile` (upsert), `updateRecruiterProfile` |
+| `saved_searches` | `talent_search` | `savedSearches`, `saveSearch`, `deleteSavedSearch` |
+| `saved_profiles` | `talent_search` | `savedProfiles`, `saveDeveloperProfile`, `unsaveDeveloperProfile`, `isProfileSaved` |
+
+> **Nota sobre el feed:** `feed(userId, page, size)` devuelve primero las publicaciones de usuarios que el `userId` sigue y luego el resto, ordenadas por fecha descendente.
+
+> **Nota sobre reacciones:** `tipoReaccion` usa el enum GraphQL `TipoReaccion` con valores LIKE, LOVE, CELEBRATE, SUPPORT. Crear o eliminar una reaccion actualiza automaticamente el contador desnormalizado del post o comentario objetivo.
+
+---
+
 ## Indices recomendados en MongoDB Atlas
 
 Despues de crear las colecciones, configurar los siguientes indices desde la interfaz de Atlas:
@@ -1157,6 +1186,9 @@ Despues de crear las colecciones, configurar los siguientes indices desde la int
 - Único: `userId`
 - Indice multikey: `tecnologias.nombre`
 - Indice geoespacial: `ubicacion.coordenadas` (2dsphere)
+
+### `recruiter_profiles`
+- Único: `userId` (ya aplicado con `@Indexed(unique = true)` en el dominio)
 
 ### `companies`
 - Indice de texto: `nombre`, `descripcion`, `sector`

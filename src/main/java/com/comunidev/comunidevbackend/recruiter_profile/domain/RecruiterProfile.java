@@ -3,6 +3,7 @@ package com.comunidev.comunidevbackend.recruiter_profile.domain;
 import com.comunidev.comunidevbackend.shared.domain.AggregateRoot;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.Instant;
@@ -13,11 +14,13 @@ import java.util.List;
 @Setter
 @Document(collection = "recruiter_profiles")
 public class RecruiterProfile extends AggregateRoot<String> {
+    @Indexed(unique = true)
     private String userId;
     private String cargo;
     private String ruc;
     private String lema;
-    private Integer anioCreacion;
+    private String empresasDescripcion;
+    private String fechaCreacion;
     private String modalidadTrabajo;
     private RedesSociales redesSociales;
     private List<Empresa> empresas = new ArrayList<>();

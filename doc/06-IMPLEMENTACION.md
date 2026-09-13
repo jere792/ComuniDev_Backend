@@ -55,3 +55,71 @@ Para no sobredimensionar el proyecto desde el primer sprint, el MVP debe incluir
 - Swagger para REST y una o dos consultas GraphQL relevantes, por ejemplo feed y mapa/vacantes.
 
 Las historias, reels, música, planes pagados, insignias avanzadas, reportes complejos y analítica avanzada pueden presentarse como fases posteriores si el tiempo académico es limitado.
+
+---
+
+## Estado de implementación actual
+
+### Módulos backend (Spring Boot + MongoDB + GraphQL)
+
+| Módulo | Estado | Entidades | Resolvers GraphQL |
+|--------|--------|-----------|-------------------|
+| Users | ✅ Completo | User | getUser, updateUser, register, login, changePassword, uploadProfileImage |
+| Auth | ✅ Completo | — | login (JWT), register (con verificación) |
+| Recruiter Profiles | ✅ Completo | RecruiterProfile | recruiterProfile, createRecruiterProfile (upsert), updateRecruiterProfile |
+| Developer Profiles | ⚠️ Parcial | DeveloperProfile (schema definido, sin resolver) | — |
+| Follow | ✅ Completo | Follow | follow, unfollow, followers, following, isFollowing |
+| Posts | ✅ Completo | Post | feed (paginated, followed-first), posts, post, createPost, updatePost, deletePost |
+| Comments | ✅ Completo | Comment | comments, commentReplies, createComment, updateComment, deleteComment |
+| Reactions | ✅ Completo | Reaction | react, unreact, changeReaction, reactions, myReaction |
+| Stories | ✅ Completo | Story | stories (24h expiry), storyViews, createStory, viewStory, deleteStory |
+| Reels | ✅ Completo | Reel | reels, reel, reelsByUser, createReel, updateReel, deleteReel |
+| Upload | ✅ Completo | — | upload (Cloudinary multipart) |
+
+### Endpoints GraphQL
+
+- **GraphQL Playground:** `http://localhost:8080/api/v1/graphql`
+- **Frontend Apollo:** `http://localhost:8080/api/v1/graphql`
+
+### Subscriptions GraphQL (WebSocket)
+
+- `onNewMessage` — nuevos mensajes en conversación
+- `onMessageUpdated` — actualización de estado de mensaje
+- `onNotification` — notificaciones en tiempo real
+
+### Enums social
+
+| Enum | Valores |
+|------|---------|
+| TipoReaccion | LIKE, LOVE, CELEBRATE, SUPPORT |
+| TipoHistoria | TEXT, IMAGE, VIDEO |
+| VisibilidadPost | PUBLICO, SEGUIDORES, CONEXIONES, SOLO_YO |
+
+### Índices MongoDB (colecciones sociales)
+
+| Colección | Índice único | Índices compuestos |
+|-----------|-------------|-------------------|
+| recruiter_profiles | userId | userId + fechaCreacion |
+| developer_profiles | userId | — |
+| follows | — | followerId + followingId |
+| posts | — | autorId + createdAt |
+| comments | — | postId + parentCommentId + createdAt |
+| reactions | — | usuarioId + contenidoId + tipoContenido (unique) |
+| stories | — | autorId + createdAt |
+| reels | — | autorId + createdAt |
+
+### Variables de entorno requeridas
+
+```env
+# MongoDB Atlas
+MONGODB_URI=mongodb+srv://<user>:<pass>@<cluster>.mongodb.net/<db>
+
+# JWT
+JWT_SECRET=tu_clave_secreta
+JWT_EXPIRATION=86400000
+
+# Cloudinary
+CLOUDINARY_CLOUD_NAME=your-cloud-name
+CLOUDINARY_API_KEY=your-api-key
+CLOUDINARY_API_SECRET=your-api-secret
+```

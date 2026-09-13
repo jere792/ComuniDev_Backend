@@ -3,8 +3,15 @@ type Reaction {
   usuarioId: String!
   objetivoId: String!
   tipoObjetivo: String!
-  tipoReaccion: String!
+  tipoReaccion: TipoReaccion!
   createdAt: String
+}
+
+enum TipoReaccion {
+  LIKE
+  LOVE
+  CELEBRATE
+  SUPPORT
 }
 
 extend type Query {
@@ -17,13 +24,13 @@ extend type Mutation {
     usuarioId: String!
     objetivoId: String!
     tipoObjetivo: String!
-    tipoReaccion: String!
+    tipoReaccion: TipoReaccion!
   ): Reaction
   unreact(usuarioId: String!, objetivoId: String!, tipoObjetivo: String!): Boolean
   changeReaction(
     usuarioId: String!
     objetivoId: String!
     tipoObjetivo: String!
-    tipoReaccion: String!
+    tipoReaccion: TipoReaccion!
   ): Reaction
 }

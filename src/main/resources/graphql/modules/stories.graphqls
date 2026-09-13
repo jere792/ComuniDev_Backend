@@ -37,6 +37,7 @@ extend type Mutation {
     visibilidad: String
   ): Story
   viewStory(storyId: String!, viewerId: String!): StoryView
+  deleteStory(id: ID!): Boolean
 }
 
 input StoryContenidoInput {

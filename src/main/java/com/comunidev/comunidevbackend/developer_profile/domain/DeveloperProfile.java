@@ -3,6 +3,7 @@ package com.comunidev.comunidevbackend.developer_profile.domain;
 import com.comunidev.comunidevbackend.shared.domain.AggregateRoot;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.Instant;
@@ -13,6 +14,7 @@ import java.util.List;
 @Setter
 @Document(collection = "developer_profiles")
 public class DeveloperProfile extends AggregateRoot<String> {
+    @Indexed(unique = true)
     private String userId;
     private String tituloProfesional;
     private List<Tecnologia> tecnologias = new ArrayList<>();

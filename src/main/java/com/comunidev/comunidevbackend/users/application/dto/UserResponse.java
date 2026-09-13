@@ -42,6 +42,9 @@ public class UserResponse {
     @Schema(description = "User bio")
     private String bio;
 
+    @Schema(description = "User website/portfolio URL")
+    private String sitioWeb;
+
     @Schema(description = "User location")
     private User.Ubicacion ubicacion;
 
