@@ -1,0 +1,15 @@
+type Block {
+  id: ID!
+  bloqueadorId: String!
+  bloqueadoId: String!
+  createdAt: String
+}
+
+extend type Query {
+  isBlocked(bloqueadorId: String!, bloqueadoId: String!): Boolean
+}
+
+extend type Mutation {
+  block(bloqueadorId: String!, bloqueadoId: String!): Block
+  unblock(bloqueadorId: String!, bloqueadoId: String!): Boolean
+}
