@@ -16,9 +16,16 @@ type Connection {
   createdAt: String
 }
 
+type ConnectionStatus {
+  status: String!
+  requestId: String
+  connectionId: String
+}
+
 extend type Query {
   connectionRequests(userId: String!): [ConnectionRequest!]!
   connections(userId: String!): [Connection!]!
+  connectionStatus(userId: String!, otherUserId: String!): ConnectionStatus!
 }
 
 extend type Mutation {
