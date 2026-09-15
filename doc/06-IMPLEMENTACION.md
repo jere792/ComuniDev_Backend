@@ -1,114 +1,142 @@
-# COMUNIDEV — Implementación
+# COMUNIDEV — Estado de Implementación
 
-## Orden recomendado de implementación
-
-### Fase 1: Base y seguridad
-- users, autenticación JWT, roles y configuración.
-- developer_profiles y recruiter_profiles.
-- companies y validación básica.
-- MongoDB Atlas, Railway, Swagger y manejo global de errores.
-
-### Fase 2: Comunidad técnica
-- posts, comments, reactions, saved_contents.
-- technical_questions, technical_answers, question_votes.
-- Feed básico y búsqueda por etiquetas.
-- notifications iniciales.
-
-### Fase 3: Conexiones y mensajería
-- connection_requests, connections, follows, blocked_users.
-- Reglas de visibilidad de perfil y contenido.
-- conversations, messages y WebSockets.
-- Estados de actividad y notificaciones en tiempo real.
-
-### Fase 4: Empleabilidad y mapa
-- vacancies, applications, application_status_history.
-- Mapa de empresas con vacantes activas y filtros.
-- Perfil profesional, CV, certificados y portafolio.
-- Vistas específicas para reclutadores y desarrolladores.
-
-### Fase 5: Multimedia y sostenibilidad
-- stories, story_views, reels.
-- ecotech_posts, recycling_points, ecotech_transactions.
-- Métricas de impacto ODS 12.
-
-### Fase 6: Gamificación, planes y operación
-- user_points, point_transactions, badges, user_badges.
-- plans y subscriptions.
-- reports, moderation_actions, support_tickets, audit_logs.
-- Dashboards y analítica administrativa.
-
-## Alcance mínimo viable (MVP)
-
-Para no sobredimensionar el proyecto desde el primer sprint, el MVP debe incluir:
-
-- Registro, login JWT, roles DEVELOPER y RECRUITER.
-- Perfil de desarrollador con tecnologías, proyectos y carga de CV.
-- Perfil de empresa y publicación de vacantes.
-- Feed básico con publicaciones, comentarios y reacciones.
-- Preguntas técnicas, respuestas y respuesta aceptada.
-- Solicitudes de conexión y conexiones aceptadas.
-- Privacidad básica: perfil público o solo conexiones.
-- Mensajería directa básica y notificaciones WebSocket.
-- Postulación a vacantes.
-- Mapa de empresas con vacantes activas.
-- Una primera función EcoDev: publicación de equipos para donación/reutilización y puntos de reciclaje verificados.
-- Swagger para REST y una o dos consultas GraphQL relevantes, por ejemplo feed y mapa/vacantes.
-
-Las historias, reels, música, planes pagados, insignias avanzadas, reportes complejos y analítica avanzada pueden presentarse como fases posteriores si el tiempo académico es limitado.
+> Última actualización:Septiembre 2026
 
 ---
 
-## Estado de implementación actual
+## Resumen ejecutivo
 
-### Módulos backend (Spring Boot + MongoDB + GraphQL)
+| Fase | Módulos | Estado |
+|------|---------|--------|
+| **Fase 1** — Base y seguridad | Users, Auth, Profiles, Upload | ✅ Completa |
+| **Fase 2** — Comunidad técnica | Posts, Comments, Reactions, Stories, Reels | ✅ Completa |
+| **Fase 3** — Conexiones | Follows, Connection Requests, Connections, Blocks, Notifications | ✅ Completa |
+| **Fase 4** — Empleabilidad | Talent Search | ✅ Completa |
+| **Fase 5** — Multimedia y sostenibilidad | — | 🔲 Pendiente |
+| **Fase 6** — Gamificación y operación | — | 🔲 Pendiente |
+
+---
+
+## 1. Módulos backend — Estado detallado
+
+### Fase 1: Base y seguridad
+
+| Módulo | Estado | Entidades | Resolvers / Endpoints |
+|--------|--------|-----------|----------------------|
+| **Users** | ✅ Completo | `User` | `me`, `user`, `users`, `updateUser`, `deleteUser` |
+| **Auth** | ✅ Completo | — | `login` (JWT), `register` (con verificación email) |
+| **Recruiter Profiles** | ✅ Completo | `RecruiterProfile` | `recruiterProfile`, `myRecruiterProfile`, `createRecruiterProfile`, `updateRecruiterProfile` |
+| **Developer Profiles** | ⚠️ Parcial | `DeveloperProfile` (schema + dominio, sin resolver) | — |
+| **Upload (Cloudinary)** | ✅ Completo | — | REST controller con multipart upload |
+
+### Fase 2: Comunidad técnica
 
 | Módulo | Estado | Entidades | Resolvers GraphQL |
 |--------|--------|-----------|-------------------|
-| Users | ✅ Completo | User | getUser, updateUser, register, login, changePassword, uploadProfileImage |
-| Auth | ✅ Completo | — | login (JWT), register (con verificación) |
-| Recruiter Profiles | ✅ Completo | RecruiterProfile | recruiterProfile, createRecruiterProfile (upsert), updateRecruiterProfile |
-| Developer Profiles | ⚠️ Parcial | DeveloperProfile (schema definido, sin resolver) | — |
-| Follow | ✅ Completo | Follow | follow, unfollow, followers, following, isFollowing |
-| Posts | ✅ Completo | Post | feed (paginated, followed-first), posts, post, createPost, updatePost, deletePost |
-| Comments | ✅ Completo | Comment | comments, commentReplies, createComment, updateComment, deleteComment |
-| Reactions | ✅ Completo | Reaction | react, unreact, changeReaction, reactions, myReaction |
-| Stories | ✅ Completo | Story | stories (24h expiry), storyViews, createStory, viewStory, deleteStory |
-| Reels | ✅ Completo | Reel | reels, reel, reelsByUser, createReel, updateReel, deleteReel |
-| Upload | ✅ Completo | — | upload (Cloudinary multipart) |
+| **Posts** | ✅ Completo | `Post` | `posts`, `post`, `feed` (paginado, seguidos primero), `createPost`, `updatePost`, `deletePost` |
+| **Comments** | ✅ Completo | `Comment` | `comments`, `comment`, `commentReplies`, `createComment`, `updateComment`, `deleteComment` |
+| **Reactions** | ✅ Completo | `Reaction` | `reactions`, `myReaction`, `react`, `unreact`, `changeReaction` |
+| **Stories** | ✅ Completo | `Story` | `stories` (24h expiry), `story`, `storyViews`, `createStory`, `viewStory`, `deleteStory` |
+| **Reels** | ✅ Completo | `Reel` | `reels`, `reel`, `reelsByUser`, `createReel`, `updateReel`, `deleteReel` |
 
-### Endpoints GraphQL
+### Fase 3: Conexiones y seguridad social
 
-- **GraphQL Playground:** `http://localhost:8080/api/v1/graphql`
-- **Frontend Apollo:** `http://localhost:8080/api/v1/graphql`
+| Módulo | Estado | Entidades | Resolvers GraphQL |
+|--------|--------|-----------|-------------------|
+| **Follows** | ✅ Completo | `Follow` | `followers`, `following`, `isFollowing`, `follow`, `unfollow` |
+| **Connection Requests** | ✅ Completo | `ConnectionRequest` | `connectionRequests`, `connectionStatus`, `sendConnectionRequest`, `acceptConnection`, `rejectConnection` |
+| **Connections** | ✅ Completo | `Connection` | `connections`, `removeConnection` |
+| **Blocks** | ✅ Completo | `Block` | `isBlocked`, `block`, `unblock` |
+| **Notifications** | ✅ Completo | `Notification` | `notifications`, `unreadCount`, `markNotificationAsRead`, `markAllAsRead`, `deleteNotification` |
 
-### Subscriptions GraphQL (WebSocket)
+### Fase 4: Empleabilidad
 
-- `onNewMessage` — nuevos mensajes en conversación
-- `onMessageUpdated` — actualización de estado de mensaje
-- `onNotification` — notificaciones en tiempo real
+| Módulo | Estado | Entidades | Resolvers / Endpoints |
+|--------|--------|-----------|----------------------|
+| **Talent Search** | ✅ Completo | — | `searchDevelopers`, `savedProfiles`, `isProfileSaved`, `savedSearches` (REST + GraphQL) |
 
-### Enums social
+### Fase 5: Multimedia y sostenibilidad (pendiente)
+
+| Módulo | Estado |
+|--------|--------|
+| Companies | 🔲 Schema definido, sin implementar |
+| EcoDev | 🔲 Schema definido, sin implementar |
+
+### Fase 6: Gamificación y operación (pendiente)
+
+| Módulo | Estado |
+|--------|--------|
+| Vacancies / Applications | 🔲 Schema definido, sin implementar |
+| Questions / Answers | 🔲 Schema definido, sin implementar |
+| Moderation | 🔲 Schema definido, sin implementar |
+| Support Tickets | 🔲 Schema definido, sin implementar |
+| Points / Gamification | 🔲 Schema definido, sin implementar |
+| Plans / Subscriptions | 🔲 Schema definido, sin implementar |
+| Messaging | 🔲 Schema definido, sin implementar |
+
+---
+
+## 2. Enums sociales
 
 | Enum | Valores |
 |------|---------|
-| TipoReaccion | LIKE, LOVE, CELEBRATE, SUPPORT |
-| TipoHistoria | TEXT, IMAGE, VIDEO |
-| VisibilidadPost | PUBLICO, SEGUIDORES, CONEXIONES, SOLO_YO |
+| `TipoReaccion` | `LIKE`, `LOVE`, `CELEBRATE`, `SUPPORT` |
+| `TipoHistoria` | `TEXT`, `IMAGE`, `VIDEO` |
+| `VisibilidadPost` | `PUBLICO`, `SEGUIDORES`, `CONEXIONES`, `SOLO_YO` |
+| `EstadoSolicitud` | `PENDIENTE`, `ACEPTADA`, `RECHAZADA` |
+| `TipoNotificacion` | `SOLICITUD_CONEXION`, `CONEXION_ACEPTADA`, `COMENTARIO`, `REACCION` |
 
-### Índices MongoDB (colecciones sociales)
+---
+
+## 3. Endpoints
+
+### GraphQL
+
+| Ruta | Descripción |
+|------|-------------|
+| `/api/v1/graphql` | Endpoint principal (queries + mutations) |
+| `/graphiql` | IDE interactivo para pruebas |
+
+### REST (Swagger)
+
+| Ruta | Descripción |
+|------|-------------|
+| `/swagger-ui.html` | Documentación interactiva |
+| `/v3/api-docs` | Spec OpenAPI 3.0 |
+
+---
+
+## 4. Subscriptions GraphQL (WebSocket) — Pendiente
+
+| Subscription | Estado |
+|-------------|--------|
+| `onNewMessage` | 🔲 No implementado |
+| `onMessageUpdated` | 🔲 No implementado |
+| `onNotification` | 🔲 No implementado |
+
+---
+
+## 5. Índices MongoDB
 
 | Colección | Índice único | Índices compuestos |
 |-----------|-------------|-------------------|
-| recruiter_profiles | userId | userId + fechaCreacion |
-| developer_profiles | userId | — |
-| follows | — | followerId + followingId |
-| posts | — | autorId + createdAt |
-| comments | — | postId + parentCommentId + createdAt |
-| reactions | — | usuarioId + contenidoId + tipoContenido (unique) |
-| stories | — | autorId + createdAt |
-| reels | — | autorId + createdAt |
+| `users` | `email` | `nombreUsuario` |
+| `recruiter_profiles` | `userId` | `userId + fechaCreacion` |
+| `developer_profiles` | `userId` | — |
+| `follows` | — | `followerId + followingId` |
+| `posts` | — | `autorId + createdAt` |
+| `comments` | — | `postId + parentCommentId + createdAt` |
+| `reactions` | — | `usuarioId + contenidoId + tipoContenido` (unique) |
+| `stories` | — | `autorId + createdAt` |
+| `reels` | — | `autorId + createdAt` |
+| `connection_requests` | — | `solicitanteId + receptorId + estado` |
+| `connections` | — | `usuarioMenorId + usuarioMayorId` |
+| `blocks` | — | `bloqueadorId + bloqueadoId` (unique) |
+| `notifications` | — | `usuarioDestinoId + leida + createdAt` |
 
-### Variables de entorno requeridas
+---
+
+## 6. Variables de entorno
 
 ```env
 # MongoDB Atlas
@@ -123,3 +151,13 @@ CLOUDINARY_CLOUD_NAME=your-cloud-name
 CLOUDINARY_API_KEY=your-api-key
 CLOUDINARY_API_SECRET=your-api-secret
 ```
+
+---
+
+## 7. Arquitectura
+
+- **Patrón:** Hexagonal (puertos y adaptadores)
+- **Organización:** Vertical slicing por módulo (`domain/` → `ports/` → `data-access/` → `feature/` → `ui/`)
+- **Base de datos:** MongoDB Atlas
+- **API:** GraphQL (principal) + REST (auth, upload, talent search)
+- **Auth:** JWT con roles `DEVELOPER`, `RECRUTADOR`, `MODERADOR`, `ADMIN`
