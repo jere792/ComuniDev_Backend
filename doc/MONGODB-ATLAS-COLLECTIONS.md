@@ -352,12 +352,19 @@ Contenido efimero, visible por 24 horas.
     "imagenUrl": "https://res.cloudinary.com/demo/image/upload/v1/story.jpg",
     "videoUrl": null,
     "musica": {
-      "titulo": "Nombre de cancion",
-      "artista": "Artista",
-      "proveedor": "SPOTIFY",
-      "referenciaExterna": "track-id-123",
-      "inicioSegundos": 0,
-      "duracionSegundos": 15
+      "trackId": "itunes-track-id-123",
+      "trackName": "Nombre de cancion",
+      "artistName": "Artista",
+      "coverUrl": "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/...",
+      "previewUrl": "https://audio-ssl.itunes.apple.com/.../preview.m4a",
+      "musicMode": "cover",
+      "lyricsText": null,
+      "lyricsPosX": 50.0,
+      "lyricsPosY": 70.0,
+      "coverPosX": 50.0,
+      "coverPosY": 40.0,
+      "lyricsScale": 1.0,
+      "coverScale": 1.0
     }
   },
   "visibilidad": "SEGUIDORES",
@@ -1161,6 +1168,7 @@ Estas colecciones son creadas y gestionadas automaticamente por Spring Data Mong
 | `comments` | `comment` | `comments`, `commentReplies`, `comment`, `createComment`, `updateComment`, `deleteComment` |
 | `reactions` | `reaction` | `reactions`, `myReaction`, `react`, `unreact`, `changeReaction` |
 | `stories` | `story` | `stories` (activas de seguidos, 24h), `story`, `createStory`, `deleteStory` |
+| REST `/api/v1/musica` | `shared` | `GET /search?q=...` (iTunes), `GET /lyrics?artist=...&track=...` (LRCLIB) |
 | `story_views` | `story` | `storyViews`, `viewStory` |
 | `recruiter_profiles` | `recruiter_profile` | `recruiterProfile`, `createRecruiterProfile` (upsert), `updateRecruiterProfile` |
 | `saved_searches` | `talent_search` | `savedSearches`, `saveSearch`, `deleteSavedSearch` |

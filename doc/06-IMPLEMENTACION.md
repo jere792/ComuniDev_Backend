@@ -103,6 +103,8 @@
 |------|-------------|
 | `/swagger-ui.html` | Documentación interactiva |
 | `/v3/api-docs` | Spec OpenAPI 3.0 |
+| `GET /api/v1/musica/search?q={termino}` | Buscar tracks en iTunes (devuelve lista de `MusicTrackResponse`) |
+| `GET /api/v1/musica/lyrics?artist={artista}&track={cancion}` | Obtener letras sincronizadas vía LRCLIB (devuelve `LyricsResponse` con `plainLyrics` + `syncedLyrics`) |
 
 ---
 

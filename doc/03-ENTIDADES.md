@@ -495,12 +495,19 @@ Esta separación es importante porque una persona puede querer permitir que otro
     "imagenUrl": "https://...",
     "videoUrl": null,
     "musica": {
-      "titulo": "Nombre de canción",
-      "artista": "Artista",
-      "proveedor": "PROVEEDOR_AUTORIZADO",
-      "referenciaExterna": "id-o-url",
-      "inicioSegundos": 0,
-      "duracionSegundos": 15
+      "trackId": "itunes-track-id-123",
+      "trackName": "Nombre de canción",
+      "artistName": "Artista",
+      "coverUrl": "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/...",
+      "previewUrl": "https://audio-ssl.itunes.apple.com/.../preview.m4a",
+      "musicMode": "cover",
+      "lyricsText": null,
+      "lyricsPosX": 50.0,
+      "lyricsPosY": 70.0,
+      "coverPosX": 50.0,
+      "coverPosY": 40.0,
+      "lyricsScale": 1.0,
+      "coverScale": 1.0
     }
   },
   "visibilidad": "SEGUIDORES",

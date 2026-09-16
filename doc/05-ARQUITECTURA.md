@@ -42,6 +42,15 @@ com.comunidev
 ├── moderation
 ├── support
 └── shared
+    ├── infrastructure/
+    │   ├── musica/
+    │   │   ├── MusicService.java          # Busqueda iTunes API
+    │   │   └── LyricsService.java         # Letras sincronizadas LRCLIB
+    │   └── rest/
+    │       └── MusicaController.java      # Endpoints REST /api/v1/musica
+    └── dto/
+        ├── MusicTrackResponse.java
+        └── LyricsResponse.java
 ```
 
 Cada slice puede seguir esta estructura:
