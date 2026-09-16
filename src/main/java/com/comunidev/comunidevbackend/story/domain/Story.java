@@ -26,7 +26,25 @@ public class Story extends AggregateRoot<String> {
         private String texto;
         private String imagenUrl;
         private String videoUrl;
-        private String musica;
+        private StoryMusica musica;
+    }
+
+    @Getter
+    @Setter
+    public static class StoryMusica {
+        private String trackId;
+        private String trackName;
+        private String artistName;
+        private String coverUrl;
+        private String previewUrl;
+        private String musicMode = "cover"; // cover | audio | lyrics
+        private String lyricsText;
+        private Double lyricsPosX = 50.0; // percentage 0-100
+        private Double lyricsPosY = 50.0; // percentage 0-100
+        private Double coverPosX = 50.0; // percentage 0-100
+        private Double coverPosY = 50.0; // percentage 0-100
+        private Double lyricsScale = 1.0;
+        private Double coverScale = 1.0;
     }
 
     public static Story create(String autorId, StoryContenido contenido, String visibilidad) {

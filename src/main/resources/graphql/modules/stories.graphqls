@@ -14,7 +14,23 @@ type StoryContenido {
   texto: String
   imagenUrl: String
   videoUrl: String
-  musica: String
+  musica: StoryMusica
+}
+
+type StoryMusica {
+  trackId: String
+  trackName: String
+  artistName: String
+  coverUrl: String
+  previewUrl: String
+  musicMode: String
+  lyricsText: String
+  lyricsPosX: Float
+  lyricsPosY: Float
+  coverPosX: Float
+  coverPosY: Float
+  lyricsScale: Float
+  coverScale: Float
 }
 
 type StoryView {
@@ -44,5 +60,21 @@ input StoryContenidoInput {
   texto: String
   imagenUrl: String
   videoUrl: String
-  musica: String
+  musica: StoryMusicaInput
+}
+
+input StoryMusicaInput {
+  trackId: String
+  trackName: String
+  artistName: String
+  coverUrl: String
+  previewUrl: String
+  musicMode: String
+  lyricsText: String
+  lyricsPosX: Float
+  lyricsPosY: Float
+  coverPosX: Float
+  coverPosY: Float
+  lyricsScale: Float
+  coverScale: Float
 }

@@ -2,6 +2,8 @@ package com.comunidev.comunidevbackend.comment.adapter.in.graphql;
 
 import com.comunidev.comunidevbackend.comment.application.port.out.CommentRepositoryPort;
 import com.comunidev.comunidevbackend.comment.domain.Comment;
+import com.comunidev.comunidevbackend.post.application.port.out.PostRepositoryPort;
+import com.comunidev.comunidevbackend.post.domain.Post;
 import lombok.RequiredArgsConstructor;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
@@ -16,6 +18,7 @@ import java.util.List;
 public class CommentGraphQLResolver {
 
     private final CommentRepositoryPort commentRepositoryPort;
+    private final PostRepositoryPort postRepositoryPort;
 
     @QueryMapping
     public List<Comment> comments(
@@ -49,7 +52,11 @@ public class CommentGraphQLResolver {
             @Argument List<String> imagenes) {
 
         Comment comment = Comment.create(autorId, contenidoId, tipoContenido, parentCommentId, texto, imagenes);
-        return commentRepositoryPort.save(comment);
+        Comment saved = commentRepositoryPort.save(comment);
+        if ("POST".equalsIgnoreCase(tipoContenido) && (parentCommentId == null || parentCommentId.isEmpty())) {
+            incrementPostCommentCount(contenidoId, 1);
+        }
+        return saved;
     }
 
     @MutationMapping
@@ -71,10 +78,31 @@ public class CommentGraphQLResolver {
     @MutationMapping
     public Boolean deleteComment(@Argument String id) {
         try {
+            Comment comment = commentRepositoryPort.findById(id).orElse(null);
+            if (comment != null && "POST".equalsIgnoreCase(comment.getTipoContenido())
+                    && (comment.getParentCommentId() == null || comment.getParentCommentId().isEmpty())) {
+                incrementPostCommentCount(comment.getContenidoId(), -1);
+            }
             commentRepositoryPort.deleteById(id);
             return true;
         } catch (Exception e) {
             return false;
+        }
+    }
+
+    private void incrementPostCommentCount(String postId, int delta) {
+        try {
+            postRepositoryPort.findById(postId).ifPresent(post -> {
+                if (post.getEstadisticas() == null) {
+                    post.setEstadisticas(new Post.PostEstadisticas());
+                }
+                int current = post.getEstadisticas().getComentariosCount() != null
+                        ? post.getEstadisticas().getComentariosCount() : 0;
+                post.getEstadisticas().setComentariosCount(Math.max(0, current + delta));
+                postRepositoryPort.save(post);
+            });
+        } catch (Exception ignored) {
+            // counter update is best-effort, don't fail the comment operation
         }
     }
 }
