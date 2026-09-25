@@ -2,6 +2,7 @@ package com.comunidev.comunidevbackend.follow.adapter.in.graphql;
 
 import com.comunidev.comunidevbackend.follow.application.port.out.FollowRepositoryPort;
 import com.comunidev.comunidevbackend.follow.domain.Follow;
+import com.comunidev.comunidevbackend.users.application.service.UserCounterService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
@@ -15,6 +16,7 @@ import java.util.List;
 public class FollowGraphQLResolver {
 
     private final FollowRepositoryPort followRepositoryPort;
+    private final UserCounterService userCounterService;
 
     @QueryMapping
     public List<Follow> followers(@Argument String userId) {
@@ -37,8 +39,18 @@ public class FollowGraphQLResolver {
             @Argument String tipoSeguido,
             @Argument String seguidoId) {
 
-        return followRepositoryPort.findBySeguidorIdAndSeguidoId(seguidorId, seguidoId)
-                .orElseGet(() -> followRepositoryPort.save(Follow.create(seguidorId, tipoSeguido, seguidoId)));
+        if (seguidorId == null || seguidorId.equals(seguidoId)) {
+            return null;
+        }
+
+        var existing = followRepositoryPort.findBySeguidorIdAndSeguidoId(seguidorId, seguidoId);
+        if (existing.isPresent()) {
+            return existing.get();
+        }
+
+        Follow saved = followRepositoryPort.save(Follow.create(seguidorId, tipoSeguido, seguidoId));
+        userCounterService.onFollow(seguidoId, seguidorId);
+        return saved;
     }
 
     @MutationMapping
@@ -50,6 +62,7 @@ public class FollowGraphQLResolver {
         return followRepositoryPort.findBySeguidorIdAndSeguidoId(seguidorId, seguidoId)
                 .map(follow -> {
                     followRepositoryPort.delete(follow);
+                    userCounterService.onUnfollow(seguidoId, seguidorId);
                     return true;
                 })
                 .orElse(false);

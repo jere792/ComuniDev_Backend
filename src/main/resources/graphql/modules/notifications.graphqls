@@ -25,3 +25,7 @@ extend type Mutation {
   markAllAsRead(userId: String!): Boolean
   deleteNotification(notificationId: String!): Boolean
 }
+
+extend type Subscription {
+  notificationReceived(userId: String!): Notification
+}

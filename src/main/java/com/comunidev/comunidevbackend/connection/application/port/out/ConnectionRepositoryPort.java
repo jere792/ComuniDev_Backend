@@ -16,6 +16,7 @@ public interface ConnectionRepositoryPort {
     void deleteRequest(ConnectionRequest request);
 
     Connection saveConnection(Connection connection);
+    Optional<Connection> findById(String id);
     Optional<Connection> findByUsers(String usuarioMenorId, String usuarioMayorId);
     Optional<Connection> findByEitherUser(String userId, String otherUserId);
     List<Connection> findByUserId(String userId);

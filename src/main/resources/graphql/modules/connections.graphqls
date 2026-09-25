@@ -18,6 +18,8 @@ type Connection {
 
 type ConnectionStatus {
   status: String!
+  userId: String
+  otherUserId: String
   requestId: String
   connectionId: String
 }
@@ -35,6 +37,10 @@ extend type Mutation {
     mensaje: String
   ): ConnectionRequest
   acceptConnection(requestId: String!): Connection
-  rejectConnection(requestId: String!): Boolean
+  rejectConnection(requestId: String!, actorId: String): Boolean
   removeConnection(connectionId: String!): Boolean
+}
+
+extend type Subscription {
+  connectionStatusChanged(userId: String!): ConnectionStatus
 }

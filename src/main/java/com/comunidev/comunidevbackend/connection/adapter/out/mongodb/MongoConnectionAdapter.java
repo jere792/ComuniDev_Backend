@@ -60,6 +60,11 @@ public class MongoConnectionAdapter implements ConnectionRepositoryPort {
     }
 
     @Override
+    public Optional<Connection> findById(String id) {
+        return connectionRepository.findById(id);
+    }
+
+    @Override
     public Optional<Connection> findByUsers(String usuarioMenorId, String usuarioMayorId) {
         return connectionRepository.findByUsuarioMenorIdAndUsuarioMayorId(usuarioMenorId, usuarioMayorId);
     }
@@ -68,12 +73,12 @@ public class MongoConnectionAdapter implements ConnectionRepositoryPort {
     public Optional<Connection> findByEitherUser(String userId, String otherUserId) {
         String id1 = userId.compareTo(otherUserId) < 0 ? userId : otherUserId;
         String id2 = userId.compareTo(otherUserId) < 0 ? otherUserId : userId;
-        return connectionRepository.findByUsuarioMenorIdAndUsuarioMayorId(id1, id2);
+        return connectionRepository.findByUsuarioMenorIdAndUsuarioMayorIdAndEstado(id1, id2, "ACTIVA");
     }
 
     @Override
     public List<Connection> findByUserId(String userId) {
-        return connectionRepository.findByUsuarioMenorIdOrUsuarioMayorId(userId, userId);
+        return connectionRepository.findByUsuarioMenorIdOrUsuarioMayorIdAndEstado(userId, userId, "ACTIVA");
     }
 
     @Override

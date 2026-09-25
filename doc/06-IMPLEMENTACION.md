@@ -108,13 +108,14 @@
 
 ---
 
-## 4. Subscriptions GraphQL (WebSocket) — Pendiente
+## 4. Subscriptions GraphQL (WebSocket)
 
 | Subscription | Estado |
 |-------------|--------|
+| `notificationReceived(userId)` | ✅ Implementado |
+| `connectionStatusChanged(userId)` | ✅ Implementado |
 | `onNewMessage` | 🔲 No implementado |
 | `onMessageUpdated` | 🔲 No implementado |
-| `onNotification` | 🔲 No implementado |
 
 ---
 

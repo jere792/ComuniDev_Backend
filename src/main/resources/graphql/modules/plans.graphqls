@@ -22,7 +22,7 @@ type PlanLimites {
   mensajesNuevosPorDia: Int
 }
 
-type Subscription {
+type PlanSubscription {
   id: ID!
   titularId: String!
   tipoTitular: String!
@@ -34,10 +34,10 @@ type Subscription {
 
 extend type Query {
   plans(tipoTitular: String): [Plan!]!
-  mySubscription(userId: String!): Subscription
+  mySubscription(userId: String!): PlanSubscription
 }
 
 extend type Mutation {
-  subscribe(tipoTitular: String!, titularId: String!, planId: String!): Subscription
+  subscribe(tipoTitular: String!, titularId: String!, planId: String!): PlanSubscription
   cancelSubscription(subscriptionId: String!): Boolean
 }

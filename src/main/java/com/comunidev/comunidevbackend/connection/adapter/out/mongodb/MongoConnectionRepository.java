@@ -9,6 +9,8 @@ import java.util.Optional;
 public interface MongoConnectionRepository extends MongoRepository<Connection, String> {
     Optional<Connection> findByUsuarioMenorIdAndUsuarioMayorId(String usuarioMenorId, String usuarioMayorId);
     List<Connection> findByUsuarioMenorIdOrUsuarioMayorId(String usuarioMenorId, String usuarioMayorId);
+    List<Connection> findByUsuarioMenorIdOrUsuarioMayorIdAndEstado(String usuarioMenorId, String usuarioMayorId, String estado);
+    Optional<Connection> findByUsuarioMenorIdAndUsuarioMayorIdAndEstado(String usuarioMenorId, String usuarioMayorId, String estado);
     Optional<Connection> findByUsuarioMenorIdAndUsuarioMayorIdOrUsuarioMenorIdAndUsuarioMayorId(
             String usuarioMenorId1, String usuarioMayorId1,
             String usuarioMenorId2, String usuarioMayorId2);
