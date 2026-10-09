@@ -28,13 +28,23 @@ public class MongoStoryAdapter implements StoryRepositoryPort {
     }
 
     @Override
-    public List<Story> findActiveByAutorId(String autorId) {
-        return storyRepository.findByAutorIdAndFechaExpiracionAfterOrderByCreatedAtAsc(autorId, Instant.now());
+    public List<Story> findRecentByAutorIds(List<String> autorIds, Instant since) {
+        return storyRepository.findByAutorIdInAndCreatedAtAfterOrderByCreatedAtDesc(autorIds, since);
     }
 
     @Override
-    public List<Story> findActiveByAutorIds(List<String> autorIds) {
-        return storyRepository.findByAutorIdInAndFechaExpiracionAfterOrderByCreatedAtAsc(autorIds, Instant.now());
+    public List<Story> findAllByAutorId(String autorId) {
+        return storyRepository.findByAutorIdOrderByCreatedAtDesc(autorId);
+    }
+
+    @Override
+    public List<Story> findAllByAutorIdAndCategoriaId(String autorId, String categoriaId) {
+        return storyRepository.findByAutorIdAndCategoriaIdsContainingOrderByCreatedAtDesc(autorId, categoriaId);
+    }
+
+    @Override
+    public List<Story> findByCategoriaId(String categoriaId) {
+        return storyRepository.findByCategoriaIdsContaining(categoriaId);
     }
 
     @Override

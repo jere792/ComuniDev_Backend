@@ -4,6 +4,7 @@ type Story {
   contenido: StoryContenido
   visibilidad: String
   fechaExpiracion: String
+  categoriaIds: [String!]
   vistasCount: Int
   reaccionesCount: Int
   estado: String
@@ -42,6 +43,7 @@ type StoryView {
 
 extend type Query {
   stories(userId: String!): [Story!]!
+  userStories(userId: String!, categoriaId: String): [Story!]!
   story(id: ID!): Story
   storyViews(storyId: String!): [StoryView!]!
 }
@@ -51,7 +53,9 @@ extend type Mutation {
     autorId: String!
     contenido: StoryContenidoInput
     visibilidad: String
+    categoriaIds: [String!]
   ): Story
+  updateStoryCategorias(storyId: ID!, categoriaIds: [String!]): Story
   viewStory(storyId: String!, viewerId: String!): StoryView
   deleteStory(id: ID!): Boolean
 }

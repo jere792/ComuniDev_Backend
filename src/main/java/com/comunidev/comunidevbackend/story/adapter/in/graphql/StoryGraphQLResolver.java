@@ -11,11 +11,16 @@ import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.stereotype.Controller;
 
+import java.time.Duration;
+import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
 public class StoryGraphQLResolver {
+
+    private static final Duration VENTANA_FEED = Duration.ofHours(24);
 
     private final StoryRepositoryPort storyRepositoryPort;
     private final FollowRepositoryPort followRepositoryPort;
@@ -26,7 +31,7 @@ public class StoryGraphQLResolver {
                 .map(Follow::getSeguidoId)
                 .toList();
 
-        List<String> autorIds = new java.util.ArrayList<>(followingIds);
+        List<String> autorIds = new ArrayList<>(followingIds);
         if (!autorIds.contains(userId)) {
             autorIds.add(userId);
         }
@@ -34,7 +39,15 @@ public class StoryGraphQLResolver {
         if (autorIds.isEmpty()) {
             return List.of();
         }
-        return storyRepositoryPort.findActiveByAutorIds(autorIds);
+        return storyRepositoryPort.findRecentByAutorIds(autorIds, Instant.now().minus(VENTANA_FEED));
+    }
+
+    @QueryMapping
+    public List<Story> userStories(@Argument String userId, @Argument String categoriaId) {
+        if (categoriaId != null && !categoriaId.isBlank()) {
+            return storyRepositoryPort.findAllByAutorIdAndCategoriaId(userId, categoriaId);
+        }
+        return storyRepositoryPort.findAllByAutorId(userId);
     }
 
     @QueryMapping
@@ -51,10 +64,21 @@ public class StoryGraphQLResolver {
     public Story createStory(
             @Argument String autorId,
             @Argument Story.StoryContenido contenido,
-            @Argument String visibilidad) {
+            @Argument String visibilidad,
+            @Argument List<String> categoriaIds) {
 
-        Story story = Story.create(autorId, contenido, visibilidad);
+        Story story = Story.create(autorId, contenido, visibilidad, categoriaIds);
         return storyRepositoryPort.save(story);
+    }
+
+    @MutationMapping
+    public Story updateStoryCategorias(@Argument String storyId, @Argument List<String> categoriaIds) {
+        return storyRepositoryPort.findById(storyId)
+                .map(story -> {
+                    story.setCategoriaIds(categoriaIds != null ? new ArrayList<>(categoriaIds) : new ArrayList<>());
+                    return storyRepositoryPort.save(story);
+                })
+                .orElse(null);
     }
 
     @MutationMapping

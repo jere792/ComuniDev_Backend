@@ -9,4 +9,5 @@ public interface MongoCommentRepository extends MongoRepository<Comment, String>
     List<Comment> findByContenidoIdOrderByCreatedAtAsc(String contenidoId);
     List<Comment> findByParentCommentIdOrderByCreatedAtAsc(String parentCommentId);
     long countByContenidoId(String contenidoId);
+    long countByContenidoIdAndTipoContenido(String contenidoId, String tipoContenido);
 }

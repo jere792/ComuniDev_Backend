@@ -6,6 +6,8 @@ import lombok.Setter;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -15,6 +17,7 @@ public class Story extends AggregateRoot<String> {
     private StoryContenido contenido = new StoryContenido();
     private String visibilidad = "PUBLICO";
     private Instant fechaExpiracion;
+    private List<String> categoriaIds = new ArrayList<>();
     private Integer vistasCount = 0;
     private Integer reaccionesCount = 0;
     private String estado = "ACTIVO";
@@ -48,12 +51,18 @@ public class Story extends AggregateRoot<String> {
     }
 
     public static Story create(String autorId, StoryContenido contenido, String visibilidad) {
+        return create(autorId, contenido, visibilidad, null);
+    }
+
+    public static Story create(String autorId, StoryContenido contenido, String visibilidad, List<String> categoriaIds) {
         Story story = new Story();
         story.setAutorId(autorId);
         story.setContenido(contenido != null ? contenido : new StoryContenido());
         story.setVisibilidad(visibilidad != null ? visibilidad : "PUBLICO");
         story.setCreatedAt(Instant.now());
-        story.setFechaExpiracion(story.getCreatedAt().plusSeconds(24 * 60 * 60));
+        if (categoriaIds != null) {
+            story.setCategoriaIds(new ArrayList<>(categoriaIds));
+        }
         return story;
     }
 }

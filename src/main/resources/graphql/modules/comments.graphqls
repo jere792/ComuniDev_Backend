@@ -8,6 +8,7 @@ type Comment {
   imagenes: [String]
   estadoModeracion: String
   reaccionesCount: Int
+  repliesCount: Int
   createdAt: String
 }
 
@@ -15,6 +16,7 @@ extend type Query {
   comments(contentId: String!, contentType: String!): [Comment!]!
   comment(id: ID!): Comment
   commentReplies(parentCommentId: String!): [Comment!]!
+  commentCount(contentId: String!, contentType: String!): Int!
 }
 
 extend type Mutation {

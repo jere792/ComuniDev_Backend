@@ -484,7 +484,7 @@ Esta separación es importante porque una persona puede querer permitir que otro
 
 ### 3.2 stories
 
-**Propósito:** representa contenido efímero, normalmente visible por 24 horas.
+**Propósito:** representa historias del usuario. Se muestran en el feed durante las últimas 24 horas (`createdAt`) y quedan archivadas permanentemente en el perfil, donde pueden clasificarse en categorías.
 
 ```json
 {
@@ -503,15 +503,16 @@ Esta separación es importante porque una persona puede querer permitir que otro
       "musicMode": "cover",
       "lyricsText": null,
       "lyricsPosX": 50.0,
-      "lyricsPosY": 70.0,
+      "lyricsPosY": 50.0,
       "coverPosX": 50.0,
-      "coverPosY": 40.0,
+      "coverPosY": 50.0,
       "lyricsScale": 1.0,
       "coverScale": 1.0
     }
   },
   "visibilidad": "SEGUIDORES",
-  "fechaExpiracion": "ISODate",
+  "fechaExpiracion": null,
+  "categoriaIds": ["ObjectId_categoria"],
   "vistasCount": 0,
   "reaccionesCount": 0,
   "estado": "ACTIVA",
@@ -523,8 +524,9 @@ Esta separación es importante porque una persona puede querer permitir que otro
 
 - Una historia debe tener texto, imagen o video.
 - La música debe utilizarse únicamente con proveedor autorizado, licencia aplicable o enlace externo permitido; no almacenar música protegida directamente en el sistema.
-- La historia deja de estar disponible cuando llega `fechaExpiracion`.
-- Se recomienda índice TTL sobre `fechaExpiracion` para limpiar documentos expirados.
+- Las historias son **permanentes**: no se borran por expiración. El feed (`stories`) solo devuelve las creadas en las últimas 24 horas (filtro sobre `createdAt`); el historial completo se consulta con `userStories`.
+- `fechaExpiracion` es un campo **legado** (historias creadas antes del cambio); las nuevas se guardan en `null`. **No crear índice TTL** sobre este campo: borraría el historial.
+- `categoriaIds` es un array de identificadores de la colección `categories` (clasificación por usuario); `updateStoryCategorias` asigna historias anteriores a categorías.
 
 ---
 
@@ -688,6 +690,34 @@ Esta separación es importante porque una persona puede querer permitir que otro
 ```
 
 **Tipos:** TECNOLOGIA, LENGUAJE, EMPLEO, ECO_DEV, COMUNIDAD, GENERAL.
+
+---
+
+### 3.9 categories
+
+**Propósito:** catálogo de categorías propias de cada usuario para clasificar sus historias (stories) en el perfil (ej. "Contrataciones 2026", "Conferencias"). Colección gestionada por el módulo `category`.
+
+```json
+{
+  "_id": "ObjectId",
+  "userId": "ObjectId_usuario",
+  "nombre": "Contrataciones 2026",
+  "descripcion": "Historias sobre procesos de contratación",
+  "icono": "badge",
+  "color": "#7c3aed",
+  "orden": 0,
+  "activa": true,
+  "createdAt": "ISODate",
+  "updatedAt": "ISODate"
+}
+```
+
+**Reglas principales:**
+
+- Cada usuario crea y gestiona sus propias categorías (`userId`); no es un catálogo global.
+- `orden` define el orden de presentación en el perfil.
+- Al eliminar una categoría se limpia su id del array `categoriaIds` de las historias que la referenciaban.
+- Índice compuesto: `userId`, `orden`.
 
 ---
 

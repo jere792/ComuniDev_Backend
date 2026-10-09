@@ -7,6 +7,8 @@ import java.time.Instant;
 import java.util.List;
 
 public interface MongoStoryRepository extends MongoRepository<Story, String> {
-    List<Story> findByAutorIdAndFechaExpiracionAfterOrderByCreatedAtAsc(String autorId, Instant now);
-    List<Story> findByAutorIdInAndFechaExpiracionAfterOrderByCreatedAtAsc(List<String> autorIds, Instant now);
+    List<Story> findByAutorIdInAndCreatedAtAfterOrderByCreatedAtDesc(List<String> autorIds, Instant since);
+    List<Story> findByAutorIdOrderByCreatedAtDesc(String autorId);
+    List<Story> findByAutorIdAndCategoriaIdsContainingOrderByCreatedAtDesc(String autorId, String categoriaId);
+    List<Story> findByCategoriaIdsContaining(String categoriaId);
 }

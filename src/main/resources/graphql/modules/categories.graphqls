@@ -1,0 +1,38 @@
+type Category {
+  id: ID!
+  userId: String!
+  nombre: String!
+  descripcion: String
+  icono: String
+  color: String
+  orden: Int
+  activa: Boolean
+  createdAt: String
+  updatedAt: String
+}
+
+extend type Query {
+  categories(userId: String!): [Category!]!
+  category(id: ID!): Category
+}
+
+extend type Mutation {
+  createCategory(
+    userId: String!
+    nombre: String!
+    descripcion: String
+    icono: String
+    color: String
+    orden: Int
+  ): Category!
+  updateCategory(
+    id: ID!
+    nombre: String
+    descripcion: String
+    icono: String
+    color: String
+    orden: Int
+    activa: Boolean
+  ): Category
+  deleteCategory(id: ID!): Boolean
+}

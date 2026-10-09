@@ -342,7 +342,7 @@ Publicaciones permanentes del feed: textos, imagenes, archivos, codigo, videos y
 
 ### 3.2 `stories`
 
-Contenido efimero, visible por 24 horas.
+Historias permanentes: el feed solo muestra las últimas 24 horas (`createdAt`) y el perfil el historial completo clasificable por categorias.
 
 ```json
 {
@@ -368,7 +368,8 @@ Contenido efimero, visible por 24 horas.
     }
   },
   "visibilidad": "SEGUIDORES",
-  "fechaExpiracion": ISODate( "2026-01-16T10:00:00Z"),
+  "fechaExpiracion": null,
+  "categoriaIds": [{"$oid": "ObjectId_categoria"}],
   "vistasCount": 0,
   "reaccionesCount": 0,
   "estado": "ACTIVA",
@@ -376,7 +377,7 @@ Contenido efimero, visible por 24 horas.
 }
 ```
 
-> **Tip:** Crear indice TTL sobre `fechaExpiracion` para limpiar automaticamente las historias expiradas.
+> **Importante:** `fechaExpiracion` es un campo legado y las nuevas historias se guardan con `null`. **Eliminar el indice TTL** sobre `fechaExpiracion` si existe: borraria el historial de historias anteriores.
 
 ---
 
@@ -495,6 +496,28 @@ Catalogo de etiquetas para normalizar busquedas, mostrar tendencias y permitir s
   "updatedAt": ISODate( "2026-01-15T10:00:00Z")
 }
 ```
+
+---
+
+### 3.9 `categories`
+
+Catalogo propio de cada usuario para clasificar sus historias (stories) en el perfil. Creada automaticamente por el modulo `category`.
+
+```json
+{
+  "userId": {"$oid": "ObjectId_usuario"},
+  "nombre": "Contrataciones 2026",
+  "descripcion": "Historias sobre procesos de contratacion",
+  "icono": "badge",
+  "color": "#7c3aed",
+  "orden": 0,
+  "activa": true,
+  "createdAt": ISODate( "2026-01-15T10:00:00Z"),
+  "updatedAt": ISODate( "2026-01-15T10:00:00Z")
+}
+```
+
+> **Nota:** al eliminar una categoria se limpia su id del array `categoriaIds` de las historias que la referenciaban.
 
 ---
 
@@ -1167,7 +1190,8 @@ Estas colecciones son creadas y gestionadas automaticamente por Spring Data Mong
 | `posts` | `post` | `posts`, `post`, `feed` (paginado, con prioridad a personas seguidas), `createPost`, `updatePost`, `deletePost` |
 | `comments` | `comment` | `comments`, `commentReplies`, `comment`, `createComment`, `updateComment`, `deleteComment` |
 | `reactions` | `reaction` | `reactions`, `myReaction`, `react`, `unreact`, `changeReaction` |
-| `stories` | `story` | `stories` (activas de seguidos, 24h), `story`, `createStory`, `deleteStory` |
+| `stories` | `story` | `stories` (ultimas 24h de seguidos), `userStories` (historial completo, filtro por categoria), `story`, `createStory`, `updateStoryCategorias`, `deleteStory` |
+| `categories` | `category` | `categories`, `category`, `createCategory`, `updateCategory`, `deleteCategory` |
 | REST `/api/v1/musica` | `shared` | `GET /search?q=...` (iTunes), `GET /lyrics?artist=...&track=...` (LRCLIB) |
 | `story_views` | `story` | `storyViews`, `viewStory` |
 | `recruiter_profiles` | `recruiter_profile` | `recruiterProfile`, `createRecruiterProfile` (upsert), `updateRecruiterProfile` |
@@ -1220,7 +1244,13 @@ Despues de crear las colecciones, configurar los siguientes indices desde la int
 - Indice de texto: `contenido.texto`, `etiquetas`
 
 ### `stories`
-- Indice TTL: `fechaExpiracion`
+- ~~Indice TTL: `fechaExpiracion`~~ **ELIMINADO** (las historias ahora son permanentes; el TTL borraba el historial)
+- Indice: `autorId`, `createdAt`
+- Indice multikey: `autorId`, `categoriaIds`
+
+### `categories`
+- Indice compuesto: `userId`, `orden` (aplicado con `@CompoundIndex` en el dominio)
+- Indice: `userId`
 
 ### `comments`
 - Indice: `contenidoId`, `tipoContenido`, `createdAt`

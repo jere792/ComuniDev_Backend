@@ -6,12 +6,16 @@ import com.comunidev.comunidevbackend.post.application.port.out.PostRepositoryPo
 import com.comunidev.comunidevbackend.post.domain.Post;
 import lombok.RequiredArgsConstructor;
 import org.springframework.graphql.data.method.annotation.Argument;
+import org.springframework.graphql.data.method.annotation.BatchMapping;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.stereotype.Controller;
 
 import java.time.Instant;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 @Controller
 @RequiredArgsConstructor
@@ -38,8 +42,31 @@ public class CommentGraphQLResolver {
     }
 
     @QueryMapping
+    public int commentCount(@Argument String contentId, @Argument String contentType) {
+        return (int) commentRepositoryPort.countByContenidoIdAndTipoContenido(contentId, contentType);
+    }
+
+    @QueryMapping
     public Comment comment(@Argument String id) {
         return commentRepositoryPort.findById(id).orElse(null);
+    }
+
+    @BatchMapping(typeName = "Comment", field = "repliesCount")
+    public Map<Comment, Integer> repliesCount(List<Comment> comments) {
+        Map<Comment, Integer> result = new HashMap<>();
+        if (comments == null || comments.isEmpty()) {
+            return result;
+        }
+        List<String> ids = comments.stream()
+                .map(Comment::getId)
+                .filter(Objects::nonNull)
+                .toList();
+        Map<String, Long> counts = commentRepositoryPort.countRepliesByParentIds(ids);
+        for (Comment comment : comments) {
+            long count = comment.getId() != null ? counts.getOrDefault(comment.getId(), 0L) : 0L;
+            result.put(comment, (int) count);
+        }
+        return result;
     }
 
     @MutationMapping
@@ -53,7 +80,7 @@ public class CommentGraphQLResolver {
 
         Comment comment = Comment.create(autorId, contenidoId, tipoContenido, parentCommentId, texto, imagenes);
         Comment saved = commentRepositoryPort.save(comment);
-        if ("POST".equalsIgnoreCase(tipoContenido) && (parentCommentId == null || parentCommentId.isEmpty())) {
+        if ("POST".equalsIgnoreCase(tipoContenido)) {
             incrementPostCommentCount(contenidoId, 1);
         }
         return saved;
@@ -79,8 +106,7 @@ public class CommentGraphQLResolver {
     public Boolean deleteComment(@Argument String id) {
         try {
             Comment comment = commentRepositoryPort.findById(id).orElse(null);
-            if (comment != null && "POST".equalsIgnoreCase(comment.getTipoContenido())
-                    && (comment.getParentCommentId() == null || comment.getParentCommentId().isEmpty())) {
+            if (comment != null && "POST".equalsIgnoreCase(comment.getTipoContenido())) {
                 incrementPostCommentCount(comment.getContenidoId(), -1);
             }
             commentRepositoryPort.deleteById(id);

@@ -20,7 +20,7 @@ MongoDB se utilizará como base documental. Cada entidad se representa como una 
 |---------|------------------------|
 | Identidad y perfiles | users, developer_profiles, recruiter_profiles, companies |
 | Conexiones y privacidad | connection_requests, connections, follows, blocked_users |
-| Contenido social | posts, stories, reels, comments, reactions, saved_contents, hashtags |
+| Contenido social | posts, stories, categories, reels, comments, reactions, saved_contents, hashtags |
 | Asistencia técnica | technical_questions, technical_answers, question_votes |
 | Mensajería y presencia | conversations, messages, activity_status_history, notifications |
 | Empleabilidad | vacancies, applications, application_status_history |
