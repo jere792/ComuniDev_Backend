@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Objects;
 
 @Controller
 @RequiredArgsConstructor
@@ -44,8 +45,19 @@ public class CategoryGraphQLResolver {
         category.setColor(color);
         if (orden != null) {
             category.setOrden(orden);
+        } else {
+            category.setOrden(nextOrden(userId));
         }
         return categoryRepositoryPort.save(category);
+    }
+
+    private Integer nextOrden(String userId) {
+        return categoryRepositoryPort.findByUserIdOrderByOrdenAsc(userId).stream()
+                .map(Category::getOrden)
+                .filter(Objects::nonNull)
+                .max(Integer::compare)
+                .map(max -> max + 1)
+                .orElse(0);
     }
 
     @MutationMapping

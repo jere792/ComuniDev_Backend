@@ -16,6 +16,11 @@
 - **COMUNIDEV — Flujos de Módulos** &mdash; `doc\09-FLUJOS.md`
 - **10. Cambios de Sesión: Stories + Música** &mdash; `doc\10-CAMBIOS-SESION-STORIES-MUSICA.md`
 - **COMUNIDEV — Colecciones MongoDB Atlas** &mdash; `doc\MONGODB-ATLAS-COLLECTIONS.md`
+- **COMUNIDEV — Product Backlog (Historias de Usuario)** &mdash; `doc\11-BACKLOG-HU.md`
+- **COMUNIDEV — Criterios de Aceptación (Gherkin)** &mdash; `doc\12-CRITERIOS-ACEPTACION.md`
+- **COMUNIDEV — Requerimientos No Funcionales (RNF)** &mdash; `doc\13-RNF.md`
+- **COMUNIDEV — Plan de Sprints (Scrum, 16 semanas)** &mdash; `doc\14-PLAN-SPRINTS.md`
+- **PC5 — Planificación ágil COMUNIDEV** &mdash; `doc\PC5.md`
 - **Read Me First** &mdash; `HELP.md`
 
 ---
