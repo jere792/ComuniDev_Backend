@@ -6,6 +6,7 @@ import java.util.Optional;
 
 public interface DeveloperProfileRepositoryPort {
     DeveloperProfile save(DeveloperProfile profile);
+    Optional<DeveloperProfile> findById(String id);
     Optional<DeveloperProfile> findByUserId(String userId);
     void deleteByUserId(String userId);
 }

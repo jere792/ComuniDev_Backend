@@ -1,8 +1,8 @@
 package com.comunidev.comunidevbackend.auth.application.service;
 
 import com.comunidev.comunidevbackend.shared.exception.BusinessException;
-import com.comunidev.comunidevbackend.users.application.port.out.UserRepositoryPort;
-import com.comunidev.comunidevbackend.users.domain.User;
+import com.comunidev.comunidevbackend.user.application.port.out.UserRepositoryPort;
+import com.comunidev.comunidevbackend.user.domain.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

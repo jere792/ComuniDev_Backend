@@ -2,6 +2,7 @@ package com.comunidev.comunidevbackend.story.adapter.in.graphql;
 
 import com.comunidev.comunidevbackend.follow.application.port.out.FollowRepositoryPort;
 import com.comunidev.comunidevbackend.follow.domain.Follow;
+import com.comunidev.comunidevbackend.shared.exception.ResourceNotFoundException;
 import com.comunidev.comunidevbackend.story.application.port.out.StoryRepositoryPort;
 import com.comunidev.comunidevbackend.story.domain.Story;
 import com.comunidev.comunidevbackend.story.domain.StoryView;
@@ -99,11 +100,9 @@ public class StoryGraphQLResolver {
 
     @MutationMapping
     public Boolean deleteStory(@Argument String id) {
-        try {
-            storyRepositoryPort.deleteById(id);
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
+        storyRepositoryPort.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Story", "id", id));
+        storyRepositoryPort.deleteById(id);
+        return true;
     }
 }

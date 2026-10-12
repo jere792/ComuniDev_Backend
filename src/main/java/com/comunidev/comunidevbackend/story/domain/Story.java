@@ -3,6 +3,8 @@ package com.comunidev.comunidevbackend.story.domain;
 import com.comunidev.comunidevbackend.shared.domain.AggregateRoot;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.mongodb.core.index.CompoundIndex;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.Instant;
@@ -12,15 +14,21 @@ import java.util.List;
 @Getter
 @Setter
 @Document(collection = "stories")
+// El feed de stories trae las activas de quienes sigo dentro de una ventana de 24h.
+@CompoundIndex(name = "idx_stories_autor_created",
+        def = "{'autorId': 1, 'createdAt': -1}")
 public class Story extends AggregateRoot<String> {
+    @Indexed
     private String autorId;
     private StoryContenido contenido = new StoryContenido();
     private String visibilidad = "PUBLICO";
+    @Indexed
     private Instant fechaExpiracion;
     private List<String> categoriaIds = new ArrayList<>();
     private Integer vistasCount = 0;
     private Integer reaccionesCount = 0;
-    private String estado = "ACTIVO";
+    @Indexed
+    private String estado;
     private Instant createdAt;
 
     @Getter

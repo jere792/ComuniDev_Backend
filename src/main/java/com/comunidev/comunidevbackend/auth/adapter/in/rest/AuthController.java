@@ -6,9 +6,9 @@ import com.comunidev.comunidevbackend.auth.application.service.GitHubOAuthServic
 import com.comunidev.comunidevbackend.auth.application.service.LoginService;
 import com.comunidev.comunidevbackend.shared.adapter.in.rest.dto.ApiResponse;
 import com.comunidev.comunidevbackend.shared.exception.BusinessException;
-import com.comunidev.comunidevbackend.users.domain.User;
-import com.comunidev.comunidevbackend.users.domain.UserRole;
-import com.comunidev.comunidevbackend.users.application.port.out.UserRepositoryPort;
+import com.comunidev.comunidevbackend.user.domain.User;
+import com.comunidev.comunidevbackend.user.domain.UserRole;
+import com.comunidev.comunidevbackend.user.application.port.out.UserRepositoryPort;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;

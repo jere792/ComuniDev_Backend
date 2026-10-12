@@ -4,6 +4,7 @@ import com.comunidev.comunidevbackend.follow.application.port.out.FollowReposito
 import com.comunidev.comunidevbackend.follow.domain.Follow;
 import com.comunidev.comunidevbackend.post.application.port.out.PostRepositoryPort;
 import com.comunidev.comunidevbackend.post.domain.Post;
+import com.comunidev.comunidevbackend.shared.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
@@ -11,19 +12,28 @@ import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.stereotype.Controller;
 
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
 public class PostGraphQLResolver {
 
+    /** Tope por request para que un cliente no pueda pedir la coleccion entera. */
+    private static final int MAX_PAGE_SIZE = 50;
+    private static final int DEFAULT_PAGE_SIZE = 10;
+
     private final PostRepositoryPort postRepositoryPort;
     private final FollowRepositoryPort followRepositoryPort;
 
+    /**
+     * Listado general paginado. Antes era {@code findAll()}, que devolvia la
+     * coleccion completa.
+     */
     @QueryMapping
-    public List<Post> posts() {
-        return postRepositoryPort.findAll();
+    public List<Post> posts(@Argument Integer page, @Argument Integer size) {
+        int pageNum = (page != null && page >= 0) ? page : 0;
+        int pageSize = (size != null && size > 0) ? Math.min(size, MAX_PAGE_SIZE) : DEFAULT_PAGE_SIZE;
+        return postRepositoryPort.findFeedPage(List.of(), pageNum * pageSize, pageSize);
     }
 
     @QueryMapping
@@ -31,6 +41,11 @@ public class PostGraphQLResolver {
         return postRepositoryPort.findById(id).orElse(null);
     }
 
+    /**
+     * El feed pagina en la base de datos: primero los posts de quienes sigo,
+     * despues el resto. Antes se cargaban TODOS los posts en memoria para
+     * hacer subList(), lo que crecia linealmente con la coleccion.
+     */
     @QueryMapping
     public List<Post> feed(
             @Argument String userId,
@@ -38,27 +53,13 @@ public class PostGraphQLResolver {
             @Argument Integer size) {
 
         int pageNum = (page != null && page >= 0) ? page : 0;
-        int pageSize = (size != null && size > 0) ? size : 10;
+        int pageSize = (size != null && size > 0) ? Math.min(size, MAX_PAGE_SIZE) : DEFAULT_PAGE_SIZE;
 
         List<String> followingIds = followRepositoryPort.findBySeguidorId(userId).stream()
                 .map(Follow::getSeguidoId)
                 .toList();
 
-        List<Post> feedPosts = new ArrayList<>();
-
-        if (followingIds.isEmpty()) {
-            feedPosts.addAll(postRepositoryPort.findAll());
-        } else {
-            feedPosts.addAll(postRepositoryPort.findByAutorIdIn(followingIds));
-            feedPosts.addAll(postRepositoryPort.findByAutorIdNotIn(followingIds));
-        }
-
-        int fromIndex = Math.min(pageNum * pageSize, feedPosts.size());
-        int toIndex = Math.min(fromIndex + pageSize, feedPosts.size());
-        if (fromIndex >= feedPosts.size()) {
-            return new ArrayList<>();
-        }
-        return feedPosts.subList(fromIndex, toIndex);
+        return postRepositoryPort.findFeedPage(followingIds, pageNum * pageSize, pageSize);
     }
 
     @MutationMapping
@@ -95,11 +96,9 @@ public class PostGraphQLResolver {
 
     @MutationMapping
     public Boolean deletePost(@Argument String id) {
-        try {
-            postRepositoryPort.deleteById(id);
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
+        postRepositoryPort.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Post", "id", id));
+        postRepositoryPort.deleteById(id);
+        return true;
     }
 }

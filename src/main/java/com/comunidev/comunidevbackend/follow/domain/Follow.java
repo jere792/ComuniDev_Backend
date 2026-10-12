@@ -3,6 +3,7 @@ package com.comunidev.comunidevbackend.follow.domain;
 import com.comunidev.comunidevbackend.shared.domain.AggregateRoot;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.Instant;
@@ -10,6 +11,9 @@ import java.time.Instant;
 @Getter
 @Setter
 @Document(collection = "follows")
+// "A quien sigo" (feed) y "quien me sigue" (contadores), mas la unicidad del par.
+@CompoundIndex(name = "idx_follows_seguidor", def = "{'seguidorId': 1, 'seguidoId': 1}", unique = true)
+@CompoundIndex(name = "idx_follows_seguido", def = "{'seguidoId': 1, 'seguidorId': 1}")
 public class Follow extends AggregateRoot<String> {
     private String seguidorId;
     private String tipoSeguido;

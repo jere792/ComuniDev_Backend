@@ -12,5 +12,17 @@ public interface PostRepositoryPort {
     List<Post> findByAutorIdIn(List<String> autorIds);
     List<Post> findByAutorIdNotIn(List<String> autorIds);
     List<Post> findByAutorId(String autorId);
+
+    /**
+     * Feed paginado: primero los posts de {@code followedIds}, despues el resto,
+     * ambos ordenados por fecha descendente. La paginacion ocurre en la base de
+     * datos, no en memoria.
+     *
+     * @param followedIds ids que sigue el usuario; nunca debe ser {@code null}
+     * @param offset      cuantos documentos saltar
+     * @param limit       maximo de documentos a devolver
+     */
+    List<Post> findFeedPage(List<String> followedIds, int offset, int limit);
+
     void deleteById(String id);
 }

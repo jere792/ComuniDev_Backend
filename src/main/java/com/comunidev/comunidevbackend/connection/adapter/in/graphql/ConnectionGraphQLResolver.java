@@ -6,7 +6,7 @@ import com.comunidev.comunidevbackend.connection.domain.ConnectionRequest;
 import com.comunidev.comunidevbackend.notification.application.port.out.NotificationRepositoryPort;
 import com.comunidev.comunidevbackend.notification.domain.Notification;
 import com.comunidev.comunidevbackend.shared.application.RealtimeEventPublisher;
-import com.comunidev.comunidevbackend.users.application.service.UserCounterService;
+import com.comunidev.comunidevbackend.user.application.service.UserCounterService;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.graphql.data.method.annotation.Argument;

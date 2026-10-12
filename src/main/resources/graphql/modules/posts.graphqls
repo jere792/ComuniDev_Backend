@@ -30,7 +30,7 @@ type PostEstadisticas {
 }
 
 extend type Query {
-  posts: [Post!]!
+  posts(page: Int, size: Int): [Post!]!
   post(id: ID!): Post
   feed(userId: String!, page: Int, size: Int): [Post!]!
 }

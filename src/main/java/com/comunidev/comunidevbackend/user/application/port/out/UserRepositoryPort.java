@@ -1,0 +1,17 @@
+package com.comunidev.comunidevbackend.user.application.port.out;
+
+import com.comunidev.comunidevbackend.user.domain.User;
+
+import java.util.List;
+import java.util.Optional;
+
+public interface UserRepositoryPort {
+    User save(User user);
+    Optional<User> findById(String id);
+    Optional<User> findByEmail(String email);
+    Optional<User> findByNombreUsuario(String nombreUsuario);
+    List<User> findAll();
+    boolean existsByEmail(String email);
+    boolean existsByNombreUsuario(String nombreUsuario);
+    void deleteById(String id);
+}

@@ -2,7 +2,7 @@ package com.comunidev.comunidevbackend.follow.adapter.in.graphql;
 
 import com.comunidev.comunidevbackend.follow.application.port.out.FollowRepositoryPort;
 import com.comunidev.comunidevbackend.follow.domain.Follow;
-import com.comunidev.comunidevbackend.users.application.service.UserCounterService;
+import com.comunidev.comunidevbackend.user.application.service.UserCounterService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;

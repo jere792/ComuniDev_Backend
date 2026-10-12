@@ -21,6 +21,7 @@
 - **COMUNIDEV — Requerimientos No Funcionales (RNF)** &mdash; `doc\13-RNF.md`
 - **COMUNIDEV — Plan de Sprints (Scrum, 16 semanas)** &mdash; `doc\14-PLAN-SPRINTS.md`
 - **PC5 — Planificación ágil COMUNIDEV** &mdash; `doc\PC5.md`
+- **COMUNIDEV — Laboratorio: Persistencia, modelos y APIs** &mdash; `doc\15-LABORATORIO.md`
 - **Read Me First** &mdash; `HELP.md`
 
 ---

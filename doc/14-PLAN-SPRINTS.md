@@ -2,7 +2,7 @@
 
 > **Duración:** 16 sprints de 1 semana cada uno.
 > **Backlog de referencia:** `doc\11-BACKLOG-HU.md` | **Criterios:** `doc\12-CRITERIOS-ACEPTACION.md` | **RNF:** `doc\13-RNF.md`.
-> **Stack real:** Java 17 + Spring Boot 3, MongoDB Atlas (Spring Data MongoDB), GraphQL (Spring for GraphQL) + REST (Swagger/OpenAPI), JWT (access + refresh), Spring Security, Cloudinary, GraphQL Subscriptions (WebSocket), arquitectura hexagonal + vertical slicing. Despliegue en Railway con Docker.
+> **Stack real:** Java 21 + Spring Boot 4.0.5, MongoDB Atlas (Spring Data MongoDB), GraphQL (Spring for GraphQL) + REST (Swagger/OpenAPI), JWT (access + refresh), Spring Security, Cloudinary, GraphQL Subscriptions (WebSocket), arquitectura hexagonal + vertical slicing. Despliegue en Railway con Docker.
 
 ---
 

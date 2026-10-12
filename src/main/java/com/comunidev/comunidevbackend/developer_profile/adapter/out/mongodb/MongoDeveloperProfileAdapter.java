@@ -19,6 +19,11 @@ public class MongoDeveloperProfileAdapter implements DeveloperProfileRepositoryP
     }
 
     @Override
+    public Optional<DeveloperProfile> findById(String id) {
+        return repository.findById(id);
+    }
+
+    @Override
     public Optional<DeveloperProfile> findByUserId(String userId) {
         return repository.findByUserId(userId);
     }

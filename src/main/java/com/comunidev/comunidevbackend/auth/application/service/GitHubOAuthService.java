@@ -2,10 +2,10 @@ package com.comunidev.comunidevbackend.auth.application.service;
 
 import com.comunidev.comunidevbackend.auth.application.dto.LoginResponse;
 import com.comunidev.comunidevbackend.shared.exception.BusinessException;
-import com.comunidev.comunidevbackend.users.domain.User;
-import com.comunidev.comunidevbackend.users.domain.UserRole;
-import com.comunidev.comunidevbackend.users.domain.UserStatus;
-import com.comunidev.comunidevbackend.users.application.port.out.UserRepositoryPort;
+import com.comunidev.comunidevbackend.user.domain.User;
+import com.comunidev.comunidevbackend.user.domain.UserRole;
+import com.comunidev.comunidevbackend.user.domain.UserStatus;
+import com.comunidev.comunidevbackend.user.application.port.out.UserRepositoryPort;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;

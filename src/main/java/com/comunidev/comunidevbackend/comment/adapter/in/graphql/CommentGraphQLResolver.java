@@ -4,6 +4,7 @@ import com.comunidev.comunidevbackend.comment.application.port.out.CommentReposi
 import com.comunidev.comunidevbackend.comment.domain.Comment;
 import com.comunidev.comunidevbackend.post.application.port.out.PostRepositoryPort;
 import com.comunidev.comunidevbackend.post.domain.Post;
+import com.comunidev.comunidevbackend.shared.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.BatchMapping;
@@ -104,16 +105,13 @@ public class CommentGraphQLResolver {
 
     @MutationMapping
     public Boolean deleteComment(@Argument String id) {
-        try {
-            Comment comment = commentRepositoryPort.findById(id).orElse(null);
-            if (comment != null && "POST".equalsIgnoreCase(comment.getTipoContenido())) {
-                incrementPostCommentCount(comment.getContenidoId(), -1);
-            }
-            commentRepositoryPort.deleteById(id);
-            return true;
-        } catch (Exception e) {
-            return false;
+        Comment comment = commentRepositoryPort.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Comment", "id", id));
+        if ("POST".equalsIgnoreCase(comment.getTipoContenido())) {
+            incrementPostCommentCount(comment.getContenidoId(), -1);
         }
+        commentRepositoryPort.deleteById(id);
+        return true;
     }
 
     private void incrementPostCommentCount(String postId, int delta) {

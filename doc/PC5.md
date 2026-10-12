@@ -48,7 +48,7 @@ Para la primera versión se priorizan las historias marcadas como **Must** del b
 
 | Componente | Tecnología |
 |------------|------------|
-| Backend | Java 17 + Spring Boot 3 |
+| Backend | Java 21 + Spring Boot 4.0.5 |
 | API principal | GraphQL (Spring for GraphQL) — `/api/v1/graphql` + GraphiQL |
 | API secundaria | REST (auth, upload, música, talent search) + Swagger/OpenAPI |
 | Base de datos | MongoDB Atlas (Spring Data MongoDB) |
@@ -370,4 +370,4 @@ Entidades principales y relaciones:
 
 ## 9. Conclusión
 
-COMUNIDEV integra una comunidad técnica, asistencia colaborativa, bolsa laboral geolocalizada y acciones vinculadas con el ODS 12 en una única plataforma. La planificación ágil propuesta — 61 historias de usuario, más de 120 escenarios Gherkin, 43 requerimientos no funcionales y 16 sprints semanales con marco Scrum — permite construir el sistema de forma incremental priorizando el MVP (Must) y dejando gamificación, planes y analítica como backlog continuo. El stack real (Spring Boot 3, MongoDB Atlas, GraphQL + REST, JWT, Cloudinary, WebSocket) sostiene una arquitectura hexagonal mantenible, escalable y segura, mientras que la app móvil respalda la experiencia de usuario con arquitectura MVVM y persistencia local Room (offline-first). Todo alineado con los objetivos del proyecto y el alcance del curso.
+COMUNIDEV integra una comunidad técnica, asistencia colaborativa, bolsa laboral geolocalizada y acciones vinculadas con el ODS 12 en una única plataforma. La planificación ágil propuesta — 61 historias de usuario, más de 120 escenarios Gherkin, 43 requerimientos no funcionales y 16 sprints semanales con marco Scrum — permite construir el sistema de forma incremental priorizando el MVP (Must) y dejando gamificación, planes y analítica como backlog continuo. El stack real (Spring Boot 4.0.5, MongoDB Atlas, GraphQL + REST, JWT, Cloudinary, WebSocket) sostiene una arquitectura hexagonal mantenible, escalable y segura, mientras que la app móvil respalda la experiencia de usuario con arquitectura MVVM y persistencia local Room (offline-first). Todo alineado con los objetivos del proyecto y el alcance del curso.

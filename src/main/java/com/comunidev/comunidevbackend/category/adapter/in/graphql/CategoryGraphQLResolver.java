@@ -2,6 +2,7 @@ package com.comunidev.comunidevbackend.category.adapter.in.graphql;
 
 import com.comunidev.comunidevbackend.category.application.port.out.CategoryRepositoryPort;
 import com.comunidev.comunidevbackend.category.domain.Category;
+import com.comunidev.comunidevbackend.shared.exception.ResourceNotFoundException;
 import com.comunidev.comunidevbackend.story.application.port.out.StoryRepositoryPort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.graphql.data.method.annotation.Argument;
@@ -86,16 +87,14 @@ public class CategoryGraphQLResolver {
 
     @MutationMapping
     public Boolean deleteCategory(@Argument String id) {
-        try {
-            storyRepositoryPort.findByCategoriaId(id).forEach(story -> {
-                if (story.getCategoriaIds() != null && story.getCategoriaIds().remove(id)) {
-                    storyRepositoryPort.save(story);
-                }
-            });
-            categoryRepositoryPort.deleteById(id);
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
+        categoryRepositoryPort.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Category", "id", id));
+        storyRepositoryPort.findByCategoriaId(id).forEach(story -> {
+            if (story.getCategoriaIds() != null && story.getCategoriaIds().remove(id)) {
+                storyRepositoryPort.save(story);
+            }
+        });
+        categoryRepositoryPort.deleteById(id);
+        return true;
     }
 }
