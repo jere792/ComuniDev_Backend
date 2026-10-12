@@ -45,9 +45,21 @@ su resolver, y verifique que compile con `./mvnw compile`.
 
 **Diferencias con la especificación original:**
 
+- **La empresa es opcional en la vacante.** `vacancies.companyId` era nullable en
+  el esquema original, pero la validación de servicio la volvía obligatoria. Ahora
+  un **reclutador independiente** puede publicar sin empresa, y la oferta se
+  atribuye solo a `recruiterId`. Es una extensión deliberada del alcance.
+  Contradice `03-ENTIDADES.md` (`:233`, `:1016`) y HU-38/HU-39, que asumen que
+  toda vacante pertenece a una empresa validada por el administrador.
+  Ver `doc/13-ALCANCE-RECLUTADOR-INDEPENDIENTE.md`.
 - `vacancies.ubicacion` quedó como `String` (texto libre), no como objeto con
   coordenadas. El esquema original ya lo exponía así. El GeoJSON que pide el
   mapa (HU-46) queda pendiente.
+- Se agregaron dos queries que el esquema original no tenía:
+  `vacanciesByRecruiter` ("Mis Ofertas") y `myCompany` ("Mi empresa").
+- `Company.recruiterId` (nuevo, índice único) liga la empresa a su reclutador
+  dueño. Ojo: `03-ENTIDADES.md:232` describe muchos-a-muchos
+  (`recruiter_profiles.empresas`), así que esta es una simplificación 1:1.
 - La validación de empresa verificada (HU-39) no se aplica todavía.
 - La exclusión de vacantes vencidas se normaliza **al leer** (en `VacancyService`),
   no con un `@Scheduled`. Suficiente mientras no existan postulaciones.

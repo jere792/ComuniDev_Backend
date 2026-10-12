@@ -30,6 +30,9 @@ public class CreateUserRequest {
     @Schema(description = "User's email", example = "carlos@correo.com")
     private String email;
 
+    @Schema(description = "Phone number", example = "+51999888777")
+    private String telefono;
+
     @NotBlank(message = "Password is required")
     @Size(min = 8, message = "Password must be at least 8 characters")
     @Schema(description = "User's password", example = "password123")

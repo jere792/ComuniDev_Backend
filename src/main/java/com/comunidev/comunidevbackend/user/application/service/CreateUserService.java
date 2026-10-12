@@ -41,6 +41,7 @@ public class CreateUserService implements CreateUserUseCase {
                 hashedPassword,
                 rol
         );
+        user.setTelefono(request.getTelefono());
 
         User savedUser = userRepositoryPort.save(user);
         return mapToResponse(savedUser);
@@ -52,6 +53,7 @@ public class CreateUserService implements CreateUserUseCase {
         response.setNombre(user.getNombre());
         response.setNombreUsuario(user.getNombreUsuario());
         response.setEmail(user.getEmail());
+        response.setTelefono(user.getTelefono());
         response.setFotoPerfilUrl(user.getFotoPerfilUrl());
         response.setBannerUrl(user.getBannerUrl());
         response.setRoles(user.getRoles().stream()

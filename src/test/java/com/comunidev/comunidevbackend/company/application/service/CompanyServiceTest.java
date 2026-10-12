@@ -16,6 +16,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class CompanyServiceTest {
 
@@ -41,8 +42,8 @@ class CompanyServiceTest {
     @Test
     @DisplayName("createCompany sin nombre se rechaza")
     void createCompanySinNombreRechaza() {
-        CompanyRequest request = new CompanyRequest(null, null, null, null, null, null,
-                ubicacion(), contacto(), null);
+        CompanyRequest request = new CompanyRequest("recruiter-1", null, null, null, null, null,
+                null, ubicacion(), contacto(), null);
 
         assertThrows(BusinessException.class, () -> service.createCompany(request));
     }
@@ -50,8 +51,8 @@ class CompanyServiceTest {
     @Test
     @DisplayName("createCompany sin correo de contacto se rechaza (03-ENTIDADES.md 1.4)")
     void createCompanySinContactoRechaza() {
-        CompanyRequest request = new CompanyRequest("DevSolutions", null, null, null, null, null,
-                ubicacion(), null, null);
+        CompanyRequest request = new CompanyRequest("recruiter-1", "DevSolutions", null, null,
+                null, null, null, ubicacion(), null, null);
 
         assertThrows(BusinessException.class, () -> service.createCompany(request));
     }
@@ -59,10 +60,35 @@ class CompanyServiceTest {
     @Test
     @DisplayName("createCompany sin ubicacion se rechaza (03-ENTIDADES.md 1.4)")
     void createCompanySinUbicacionRechaza() {
-        CompanyRequest request = new CompanyRequest("DevSolutions", null, null, null, null, null,
-                null, contacto(), null);
+        CompanyRequest request = new CompanyRequest("recruiter-1", "DevSolutions", null, null,
+                null, null, null, null, contacto(), null);
 
         assertThrows(BusinessException.class, () -> service.createCompany(request));
+    }
+
+    @Test
+    @DisplayName("createCompany dos veces para el mismo reclutador se rechaza")
+    void createCompanyRepetidaRechaza() {
+        service.createCompany(solicitudValida());
+
+        assertThrows(BusinessException.class, () -> service.createCompany(solicitudValida()));
+    }
+
+    @Test
+    @DisplayName("getMyCompany devuelve vacia si el reclutador no tiene empresa")
+    void getMyCompanySinEmpresaDevuelveVacia() {
+        assertTrue(service.getMyCompany("recruiter-1").isEmpty());
+    }
+
+    @Test
+    @DisplayName("getMyCompany devuelve la empresa que creo ese reclutador")
+    void getMyCompanyDevuelveLaDelRecruiter() {
+        Company created = service.createCompany(solicitudValida());
+
+        Optional<Company> mine = service.getMyCompany("recruiter-1");
+
+        assertTrue(mine.isPresent());
+        assertEquals(created.getId(), mine.get().getId());
     }
 
     @Test
@@ -70,8 +96,8 @@ class CompanyServiceTest {
     void updateCompanyNoTocaCamposNulos() {
         Company created = service.createCompany(solicitudValida());
 
-        CompanyRequest parcial = new CompanyRequest(null, "Empresa de software", null, null,
-                null, null, null, null, null);
+        CompanyRequest parcial = new CompanyRequest(null, null, "Empresa de software", null,
+                null, null, null, null, null, null);
         Company updated = service.updateCompany(created.getId(), parcial);
 
         assertEquals("DevSolutions Perú", updated.getNombre(), "el nombre no debia cambiar");
@@ -87,7 +113,7 @@ class CompanyServiceTest {
     // ---------------------------------------------------------------- helpers
 
     private CompanyRequest solicitudValida() {
-        return new CompanyRequest("DevSolutions Perú", "Desarrollo de software",
+        return new CompanyRequest("recruiter-1", "DevSolutions Perú", "Desarrollo de software",
                 "Tecnología", "https://devsolutions.example", null, null,
                 ubicacion(), contacto(), null);
     }
@@ -126,6 +152,13 @@ class CompanyServiceTest {
         @Override
         public List<Company> findAll() {
             return List.copyOf(store.values());
+        }
+
+        @Override
+        public Optional<Company> findByRecruiterId(String recruiterId) {
+            return store.values().stream()
+                    .filter(company -> recruiterId.equals(company.getRecruiterId()))
+                    .findFirst();
         }
 
         @Override

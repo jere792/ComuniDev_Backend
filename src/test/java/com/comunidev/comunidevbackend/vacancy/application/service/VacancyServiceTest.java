@@ -3,6 +3,7 @@ package com.comunidev.comunidevbackend.vacancy.application.service;
 import com.comunidev.comunidevbackend.company.application.port.out.CompanyRepositoryPort;
 import com.comunidev.comunidevbackend.company.domain.Company;
 import com.comunidev.comunidevbackend.shared.exception.BusinessException;
+import com.comunidev.comunidevbackend.shared.exception.ResourceNotFoundException;
 import com.comunidev.comunidevbackend.vacancy.application.dto.VacancyRequest;
 import com.comunidev.comunidevbackend.vacancy.application.port.out.VacancyRepositoryPort;
 import com.comunidev.comunidevbackend.vacancy.domain.Vacancy;
@@ -34,7 +35,7 @@ class VacancyServiceTest {
         companies = new FakeCompanyRepository();
         service = new VacancyService(vacancies, companies);
 
-        Company company = Company.create("DevSolutions");
+        Company company = Company.create("recruiter-1", "DevSolutions");
         companies.save(company);
         companyId = company.getId();
     }
@@ -88,6 +89,39 @@ class VacancyServiceTest {
 
         assertEquals(Vacancy.ESTADO_ACTIVA, saved.getEstado());
         assertEquals(Vacancy.MODALIDAD_REMOTO, saved.getModalidad());
+    }
+
+    @Test
+    @DisplayName("createVacancy sin empresa funciona para un reclutador independiente")
+    void createVacancySinEmpresaFuncionaParaIndependiente() {
+        VacancyRequest independiente = new VacancyRequest(null, "recruiter-1",
+                "Backend Developer", "Buscamos dev con Spring Boot", null, null, List.of("Java"),
+                "MID", Vacancy.MODALIDAD_REMOTO, "TIEMPO_COMPLETO", null, null, 1, futuro(), null);
+
+        Vacancy saved = service.createVacancy(independiente);
+
+        assertEquals(null, saved.getCompanyId());
+        assertEquals(Vacancy.ESTADO_ACTIVA, saved.getEstado());
+    }
+
+    @Test
+    @DisplayName("createVacancy sin reclutador se rechaza: con la empresa opcional es la unica atribucion")
+    void createVacancySinReclutadorRechaza() {
+        VacancyRequest sinReclutador = new VacancyRequest(companyId, null,
+                "Backend Developer", "Buscamos dev con Spring Boot", null, null, List.of("Java"),
+                "MID", Vacancy.MODALIDAD_REMOTO, "TIEMPO_COMPLETO", null, null, 1, futuro(), null);
+
+        assertThrows(BusinessException.class, () -> service.createVacancy(sinReclutador));
+    }
+
+    @Test
+    @DisplayName("createVacancy con companyId que no existe se rechaza")
+    void createVacancyEmpresaInexistenteRechaza() {
+        VacancyRequest conEmpresaFalsa = new VacancyRequest("no-existe", "recruiter-1",
+                "Backend Developer", "Desc", null, null, List.of("Java"), "MID",
+                Vacancy.MODALIDAD_REMOTO, "TIEMPO_COMPLETO", null, null, 1, futuro(), null);
+
+        assertThrows(ResourceNotFoundException.class, () -> service.createVacancy(conEmpresaFalsa));
     }
 
     @Test
@@ -244,6 +278,13 @@ class VacancyServiceTest {
         @Override
         public List<Company> findAll() {
             return List.copyOf(store.values());
+        }
+
+        @Override
+        public Optional<Company> findByRecruiterId(String recruiterId) {
+            return store.values().stream()
+                    .filter(company -> recruiterId.equals(company.getRecruiterId()))
+                    .findFirst();
         }
 
         @Override

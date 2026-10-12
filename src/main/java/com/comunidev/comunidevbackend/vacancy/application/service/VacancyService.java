@@ -56,10 +56,14 @@ public class VacancyService implements VacancyUseCase {
 
     @Override
     public Vacancy createVacancy(VacancyRequest request) {
-        if (isBlank(request.companyId())) {
-            throw new BusinessException("La vacante requiere una empresa");
+        // Con la empresa opcional, el reclutador es la única atribución de la vacante.
+        if (isBlank(request.recruiterId())) {
+            throw new BusinessException("La vacante necesita un reclutador que la publique");
         }
-        if (!companyRepositoryPort.findById(request.companyId()).isPresent()) {
+
+        // companyId es opcional: un reclutador independiente publica sin empresa
+        // (nullable en el esquema desde el diseño original). Si sí viene, debe existir.
+        if (!isBlank(request.companyId()) && companyRepositoryPort.findById(request.companyId()).isEmpty()) {
             throw new ResourceNotFoundException("Company", "id", request.companyId());
         }
 
@@ -93,15 +97,15 @@ public class VacancyService implements VacancyUseCase {
 
     /**
      * 03-ENTIDADES.md 6.1: "Una vacante activa requiere título, descripción,
-     * empresa, modalidad, tecnologías, fecha límite y ubicación o condición remota".
+     * modalidad, tecnologías, fecha límite y ubicación o condición remota".
      * RN-22: la fecha límite no puede ser anterior a la fecha actual.
+     *
+     * <p>La empresa se quitó de los requisitos: un reclutador independiente
+     * publica sin ella, y el esquema la tenía nullable desde el diseño original.
      */
     private void validarParaActiva(Vacancy vacancy) {
         if (isBlank(vacancy.getTitulo())) {
             throw new BusinessException("La vacante activa requiere título");
-        }
-        if (isBlank(vacancy.getCompanyId())) {
-            throw new BusinessException("La vacante activa requiere empresa");
         }
         if (isBlank(vacancy.getDescripcion())) {
             throw new BusinessException("La vacante activa requiere descripción");
