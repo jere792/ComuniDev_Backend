@@ -33,10 +33,13 @@ type CompanyRedes {
 extend type Query {
   companies: [Company!]!
   company(id: ID!): Company
+  # "Mi empresa" del reclutador; null si todavía no creó ninguna.
+  myCompany(recruiterId: String!): Company
 }
 
 extend type Mutation {
   createCompany(
+    recruiterId: String!
     nombre: String!
     descripcion: String
     sector: String

@@ -28,22 +28,13 @@ type VacancyRemuneracion {
   periodo: String
 }
 
-type Application {
-  id: ID!
-  vacancyId: String!
-  developerId: String!
-  cartaPresentacion: String
-  estado: String!
-  reclutadorAsignadoId: String
-  createdAt: String
-}
-
 extend type Query {
   vacancies(estado: String): [Vacancy!]!
   vacancy(id: ID!): Vacancy
   vacanciesByCompany(companyId: String!): [Vacancy!]!
-  applications(vacancyId: String!): [Application!]!
-  myApplications(developerId: String!): [Application!]!
+  # HU-44: "Mis Ofertas" del reclutador. No reemplaza a vacanciesByCompany:
+  # ese es por empresa (cualquiera de sus reclutadores), este es por autor.
+  vacanciesByRecruiter(recruiterId: String!): [Vacancy!]!
 }
 
 extend type Mutation {
@@ -77,17 +68,9 @@ extend type Mutation {
     remuneracion: VacancyRemuneracionInput
     vacantesDisponibles: Int
     fechaLimite: String
+    # HU-41: el reclutador puede activar, pausar o cerrar manualmente.
+    estado: String
   ): Vacancy
-  applyToVacancy(
-    vacancyId: String!
-    developerId: String!
-    cartaPresentacion: String
-  ): Application
-  updateApplicationStatus(
-    applicationId: String!
-    estado: String!
-  ): Application
-  withdrawApplication(applicationId: String!): Boolean
 }
 
 input VacancyRemuneracionInput {

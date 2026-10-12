@@ -1,0 +1,47 @@
+# Postulaciones (HU-43 desarrollador / HU-44 reclutador)
+
+Especificación original que venía dentro de `vacancies.graphqls`. Al implementar
+`companies` + `vacancies` se separó aquí, porque las postulaciones son una entidad
+propia (`applications`, doc/03-ENTIDADES.md 6.2) y aún no tienen resolver.
+
+**No lo borres:** es la especificación de lo que falta construir. Ver el README de
+esta carpeta para el orden sugerido.
+
+Queries sin resolver: `applications`, `myApplications`.
+Mutations sin resolver: `applyToVacancy`, `updateApplicationStatus`,
+`withdrawApplication`.
+
+## Reglas pendientes de considerar
+
+- HU-43: el desarrollador no puede postular dos veces a la misma vacante.
+- HU-44: los estados son enviada, en revisión, preseleccionada, entrevistada,
+  rechazada, aceptada y retirada; solo el reclutador autorizado los cambia.
+- RN-21: una vacante VENCIDA deja de recibir postulaciones.
+
+type Application {
+  id: ID!
+  vacancyId: String!
+  developerId: String!
+  cartaPresentacion: String
+  estado: String!
+  reclutadorAsignadoId: String
+  createdAt: String
+}
+
+extend type Query {
+  applications(vacancyId: String!): [Application!]!
+  myApplications(developerId: String!): [Application!]!
+}
+
+extend type Mutation {
+  applyToVacancy(
+    vacancyId: String!
+    developerId: String!
+    cartaPresentacion: String
+  ): Application
+  updateApplicationStatus(
+    applicationId: String!
+    estado: String!
+  ): Application
+  withdrawApplication(applicationId: String!): Boolean
+}
