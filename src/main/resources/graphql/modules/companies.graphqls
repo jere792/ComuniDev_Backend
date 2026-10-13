@@ -30,7 +30,6 @@ type CompanyContacto {
 
 type CompanyRedes {
   linkedin: String
-  github: String
 }
 
 extend type Query {
@@ -85,5 +84,4 @@ input CompanyContactoInput {
 
 input CompanyRedesInput {
   linkedin: String
-  github: String
 }

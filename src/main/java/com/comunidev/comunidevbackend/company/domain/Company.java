@@ -91,10 +91,13 @@ public class Company extends AggregateRoot<String> {
         private String telefono;
     }
 
+    /**
+     * Redes y enlaces de la organización. Sin GitHub: una empresa no publica
+     * código, eso es del perfil del developer.
+     */
     @Getter
     @Setter
     public static class Redes {
         private String linkedin;
-        private String github;
     }
 }
