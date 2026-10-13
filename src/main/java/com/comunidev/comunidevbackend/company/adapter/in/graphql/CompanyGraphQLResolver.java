@@ -42,13 +42,15 @@ public class CompanyGraphQLResolver {
             @Argument String sitioWeb,
             @Argument String logoUrl,
             @Argument String bannerUrl,
+            @Argument String ruc,
+            @Argument String fechaCreacion,
             @Argument Company.Ubicacion ubicacion,
             @Argument Company.Contacto contacto,
             @Argument Company.Redes redes) {
 
         return companyUseCase.createCompany(new CompanyRequest(
                 recruiterId, nombre, descripcion, sector, sitioWeb, logoUrl, bannerUrl,
-                ubicacion, contacto, redes));
+                ruc, fechaCreacion, ubicacion, contacto, redes));
     }
 
     @MutationMapping
@@ -60,6 +62,8 @@ public class CompanyGraphQLResolver {
             @Argument String sitioWeb,
             @Argument String logoUrl,
             @Argument String bannerUrl,
+            @Argument String ruc,
+            @Argument String fechaCreacion,
             @Argument Company.Ubicacion ubicacion,
             @Argument Company.Contacto contacto,
             @Argument Company.Redes redes) {
@@ -67,6 +71,6 @@ public class CompanyGraphQLResolver {
         // recruiterId en null: una empresa no cambia de dueño (solo el create lo fija).
         return companyUseCase.updateCompany(id, new CompanyRequest(
                 null, nombre, descripcion, sector, sitioWeb, logoUrl, bannerUrl,
-                ubicacion, contacto, redes));
+                ruc, fechaCreacion, ubicacion, contacto, redes));
     }
 }

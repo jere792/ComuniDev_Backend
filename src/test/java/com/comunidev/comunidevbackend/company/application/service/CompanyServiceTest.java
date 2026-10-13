@@ -40,10 +40,19 @@ class CompanyServiceTest {
     }
 
     @Test
+    @DisplayName("createCompany guarda el RUC y la fecha, que son datos de la empresa")
+    void createCompanyGuardaRucYFecha() {
+        Company saved = service.createCompany(solicitudValida());
+
+        assertEquals("20512345678", saved.getRuc());
+        assertEquals("2020", saved.getFechaCreacion());
+    }
+
+    @Test
     @DisplayName("createCompany sin nombre se rechaza")
     void createCompanySinNombreRechaza() {
         CompanyRequest request = new CompanyRequest("recruiter-1", null, null, null, null, null,
-                null, ubicacion(), contacto(), null);
+                null, null, null, ubicacion(), contacto(), null);
 
         assertThrows(BusinessException.class, () -> service.createCompany(request));
     }
@@ -52,7 +61,7 @@ class CompanyServiceTest {
     @DisplayName("createCompany sin correo de contacto se rechaza (03-ENTIDADES.md 1.4)")
     void createCompanySinContactoRechaza() {
         CompanyRequest request = new CompanyRequest("recruiter-1", "DevSolutions", null, null,
-                null, null, null, ubicacion(), null, null);
+                null, null, null, null, null, ubicacion(), null, null);
 
         assertThrows(BusinessException.class, () -> service.createCompany(request));
     }
@@ -61,7 +70,7 @@ class CompanyServiceTest {
     @DisplayName("createCompany sin ubicacion se rechaza (03-ENTIDADES.md 1.4)")
     void createCompanySinUbicacionRechaza() {
         CompanyRequest request = new CompanyRequest("recruiter-1", "DevSolutions", null, null,
-                null, null, null, null, contacto(), null);
+                null, null, null, null, null, null, contacto(), null);
 
         assertThrows(BusinessException.class, () -> service.createCompany(request));
     }
@@ -97,7 +106,7 @@ class CompanyServiceTest {
         Company created = service.createCompany(solicitudValida());
 
         CompanyRequest parcial = new CompanyRequest(null, null, "Empresa de software", null,
-                null, null, null, null, null, null);
+                null, null, null, null, null, null, null, null);
         Company updated = service.updateCompany(created.getId(), parcial);
 
         assertEquals("DevSolutions Perú", updated.getNombre(), "el nombre no debia cambiar");
@@ -115,7 +124,7 @@ class CompanyServiceTest {
     private CompanyRequest solicitudValida() {
         return new CompanyRequest("recruiter-1", "DevSolutions Perú", "Desarrollo de software",
                 "Tecnología", "https://devsolutions.example", null, null,
-                ubicacion(), contacto(), null);
+                "20512345678", "2020", ubicacion(), contacto(), null);
     }
 
     private Company.Ubicacion ubicacion() {

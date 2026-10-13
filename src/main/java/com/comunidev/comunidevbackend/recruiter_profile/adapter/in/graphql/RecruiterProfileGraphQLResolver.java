@@ -25,20 +25,14 @@ public class RecruiterProfileGraphQLResolver {
     public RecruiterProfile createRecruiterProfile(
             @Argument String userId,
             @Argument String cargo,
-            @Argument String ruc,
             @Argument String lema,
-            @Argument String empresasDescripcion,
-            @Argument String fechaCreacion,
             @Argument String modalidadTrabajo,
             @Argument RecruiterProfile.RedesSociales redesSociales) {
 
         return recruiterProfileRepositoryPort.findByUserId(userId)
                 .map(profile -> {
                     if (cargo != null) profile.setCargo(cargo);
-                    if (ruc != null) profile.setRuc(ruc);
                     if (lema != null) profile.setLema(lema);
-                    if (empresasDescripcion != null) profile.setEmpresasDescripcion(empresasDescripcion);
-                    if (fechaCreacion != null) profile.setFechaCreacion(fechaCreacion);
                     if (modalidadTrabajo != null) profile.setModalidadTrabajo(modalidadTrabajo);
                     if (redesSociales != null) profile.setRedesSociales(redesSociales);
                     profile.setUpdatedAt(java.time.Instant.now());
@@ -47,10 +41,7 @@ public class RecruiterProfileGraphQLResolver {
                 .orElseGet(() -> {
                     RecruiterProfile profile = RecruiterProfile.create(userId);
                     profile.setCargo(cargo);
-                    profile.setRuc(ruc);
                     profile.setLema(lema);
-                    profile.setEmpresasDescripcion(empresasDescripcion);
-                    profile.setFechaCreacion(fechaCreacion);
                     profile.setModalidadTrabajo(modalidadTrabajo);
                     profile.setRedesSociales(redesSociales);
                     return recruiterProfileRepositoryPort.save(profile);
@@ -61,20 +52,14 @@ public class RecruiterProfileGraphQLResolver {
     public RecruiterProfile updateRecruiterProfile(
             @Argument String id,
             @Argument String cargo,
-            @Argument String ruc,
             @Argument String lema,
-            @Argument String empresasDescripcion,
-            @Argument String fechaCreacion,
             @Argument String modalidadTrabajo,
             @Argument RecruiterProfile.RedesSociales redesSociales) {
 
         return mongoRepository.findById(id)
                 .map(profile -> {
                     if (cargo != null) profile.setCargo(cargo);
-                    if (ruc != null) profile.setRuc(ruc);
                     if (lema != null) profile.setLema(lema);
-                    if (empresasDescripcion != null) profile.setEmpresasDescripcion(empresasDescripcion);
-                    if (fechaCreacion != null) profile.setFechaCreacion(fechaCreacion);
                     if (modalidadTrabajo != null) profile.setModalidadTrabajo(modalidadTrabajo);
                     if (redesSociales != null) profile.setRedesSociales(redesSociales);
                     profile.setUpdatedAt(java.time.Instant.now());

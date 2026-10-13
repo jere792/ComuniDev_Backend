@@ -39,6 +39,11 @@ public class Company extends AggregateRoot<String> {
     private String sitioWeb;
     private String logoUrl;
     private String bannerUrl;
+
+    /** Datos legales de la organización. Antes vivían en recruiter_profiles. */
+    private String ruc;
+    private String fechaCreacion;
+
     private Ubicacion ubicacion;
     private Contacto contacto;
     private Redes redes;

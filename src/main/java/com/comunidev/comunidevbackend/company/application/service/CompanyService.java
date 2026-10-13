@@ -79,6 +79,8 @@ public class CompanyService implements CompanyUseCase {
         if (request.sitioWeb() != null) company.setSitioWeb(request.sitioWeb());
         if (request.logoUrl() != null) company.setLogoUrl(request.logoUrl());
         if (request.bannerUrl() != null) company.setBannerUrl(request.bannerUrl());
+        if (request.ruc() != null) company.setRuc(request.ruc());
+        if (request.fechaCreacion() != null) company.setFechaCreacion(request.fechaCreacion());
         if (request.ubicacion() != null) company.setUbicacion(request.ubicacion());
         if (request.contacto() != null) company.setContacto(request.contacto());
         if (request.redes() != null) company.setRedes(request.redes());

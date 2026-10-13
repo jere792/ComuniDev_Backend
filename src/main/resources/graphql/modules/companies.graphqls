@@ -6,6 +6,9 @@ type Company {
   sitioWeb: String
   logoUrl: String
   bannerUrl: String
+  # Datos legales de la organización; antes vivían en recruiter_profiles.
+  ruc: String
+  fechaCreacion: String
   ubicacion: CompanyUbicacion
   contacto: CompanyContacto
   redes: CompanyRedes
@@ -46,6 +49,8 @@ extend type Mutation {
     sitioWeb: String
     logoUrl: String
     bannerUrl: String
+    ruc: String
+    fechaCreacion: String
     ubicacion: CompanyUbicacionInput
     contacto: CompanyContactoInput
     redes: CompanyRedesInput
@@ -58,6 +63,8 @@ extend type Mutation {
     sitioWeb: String
     logoUrl: String
     bannerUrl: String
+    ruc: String
+    fechaCreacion: String
     ubicacion: CompanyUbicacionInput
     contacto: CompanyContactoInput
     redes: CompanyRedesInput

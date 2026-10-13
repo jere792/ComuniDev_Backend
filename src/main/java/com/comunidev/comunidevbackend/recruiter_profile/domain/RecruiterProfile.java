@@ -17,10 +17,7 @@ public class RecruiterProfile extends AggregateRoot<String> {
     @Indexed(unique = true)
     private String userId;
     private String cargo;
-    private String ruc;
     private String lema;
-    private String empresasDescripcion;
-    private String fechaCreacion;
     private String modalidadTrabajo;
     private RedesSociales redesSociales;
     private List<Empresa> empresas = new ArrayList<>();

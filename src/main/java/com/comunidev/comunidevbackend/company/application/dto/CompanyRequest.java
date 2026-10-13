@@ -19,6 +19,8 @@ public record CompanyRequest(
         String sitioWeb,
         String logoUrl,
         String bannerUrl,
+        String ruc,
+        String fechaCreacion,
         Company.Ubicacion ubicacion,
         Company.Contacto contacto,
         Company.Redes redes) {

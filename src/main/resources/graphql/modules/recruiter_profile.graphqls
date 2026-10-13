@@ -2,10 +2,7 @@ type RecruiterProfile {
   id: ID!
   userId: String!
   cargo: String
-  ruc: String
   lema: String
-  empresasDescripcion: String
-  fechaCreacion: String
   modalidadTrabajo: ModalidadTrabajo
   redesSociales: RedesSociales
   empresas: [RecruiterEmpresa]
@@ -47,20 +44,16 @@ extend type Mutation {
   createRecruiterProfile(
     userId: String!
     cargo: String
-    ruc: String
     lema: String
-    empresasDescripcion: String
-    fechaCreacion: String
     modalidadTrabajo: ModalidadTrabajo
     redesSociales: RedesSocialesInput
   ): RecruiterProfile
+  # ruc, empresasDescripcion y fechaCreacion se quitaron: son datos de la
+  # organización y ahora viven en Company.
   updateRecruiterProfile(
     id: ID!
     cargo: String
-    ruc: String
     lema: String
-    empresasDescripcion: String
-    fechaCreacion: String
     modalidadTrabajo: ModalidadTrabajo
     redesSociales: RedesSocialesInput
   ): RecruiterProfile
