@@ -36,6 +36,14 @@ public class MongoMessageAdapter implements MessageRepositoryPort {
         return conversationRepository.findByParticipantesContainingOrderByUltimoMensajeEnDesc(userId);
     }
 
+    /** En Mongo seria un caos de campos nulos; se filtra en memoria con la lista ya traida. */
+    @Override
+    public List<Conversation> findConversacionesVisibles(String userId) {
+        return findConversationsByUserId(userId).stream()
+                .filter(c -> !c.esSolicitudPara(userId) && !c.esArchivadaPara(userId))
+                .toList();
+    }
+
     @Override
     public Message saveMessage(Message message) {
         return messageRepository.save(message);

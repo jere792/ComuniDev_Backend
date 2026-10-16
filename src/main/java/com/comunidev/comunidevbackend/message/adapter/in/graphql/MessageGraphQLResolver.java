@@ -39,11 +39,20 @@ public class MessageGraphQLResolver {
         private Integer mensajesNoLeidos;
         private String createdAt;
         private String updatedAt;
+        /** True si para quien consulta el hilo sigue esperando aceptacion. */
+        private Boolean esSolicitud;
     }
 
     @QueryMapping
     public List<ConversationView> conversations(@Argument String userId) {
         return messageService.obtenerConversaciones(userId).stream()
+                .map(c -> aVista(c, userId))
+                .toList();
+    }
+
+    @QueryMapping
+    public List<ConversationView> messageRequests(@Argument String userId) {
+        return messageService.obtenerSolicitudes(userId).stream()
                 .map(c -> aVista(c, userId))
                 .toList();
     }
@@ -61,6 +70,16 @@ public class MessageGraphQLResolver {
     @MutationMapping
     public Boolean markConversationRead(@Argument String userId, @Argument String conversationId) {
         return messageService.marcarLeido(userId, conversationId);
+    }
+
+    @MutationMapping
+    public Boolean acceptConversation(@Argument String userId, @Argument String conversationId) {
+        return messageService.aceptar(userId, conversationId);
+    }
+
+    @MutationMapping
+    public Boolean rejectConversation(@Argument String userId, @Argument String conversationId) {
+        return messageService.rechazar(userId, conversationId);
     }
 
     @SubscriptionMapping
@@ -81,6 +100,7 @@ public class MessageGraphQLResolver {
         view.setMensajesNoLeidos((int) conversation.noLeidosPara(userId));
         view.setCreatedAt(aTexto(conversation.getCreatedAt()));
         view.setUpdatedAt(aTexto(conversation.getUpdatedAt()));
+        view.setEsSolicitud(conversation.esSolicitudPara(userId));
         return view;
     }
 

@@ -34,6 +34,10 @@ public class Conversation extends AggregateRoot<String> {
     private Instant ultimoMensajeEn;
     /** Contador por destinatario, para la bolita de no leidos de cada persona. */
     private Map<String, Long> mensajesNoLeidos;
+    /** Para quien el hilo quedo como solicitud: no lo ve en su lista hasta aceptarlo. */
+    private String solicitudPara;
+    /** Quien rechazo el hilo; deja de verlo en la lista y en solicitudes. */
+    private String archivadaPara;
     private Instant createdAt;
     private Instant updatedAt;
 
@@ -83,5 +87,28 @@ public class Conversation extends AggregateRoot<String> {
     /** No leidos que quedan para la persona que mira la lista. */
     public long noLeidosPara(String userId) {
         return mensajesNoLeidos == null ? 0L : mensajesNoLeidos.getOrDefault(userId, 0L);
+    }
+
+    /** True si para esa persona el hilo sigue esperando aceptacion. */
+    public boolean esSolicitudPara(String userId) {
+        return solicitudPara != null && solicitudPara.equals(userId);
+    }
+
+    /** True si esa persona rechazo el hilo y por eso no lo ve mas. */
+    public boolean esArchivadaPara(String userId) {
+        return archivadaPara != null && archivadaPara.equals(userId);
+    }
+
+    /** Pasa a conversacion normal para quien venia viendolo como solicitud. */
+    public void aceptarPor(String userId) {
+        if (esSolicitudPara(userId)) this.solicitudPara = null;
+    }
+
+    /** Deja de verse para quien lo rechaza; el otro sigue viendolo en su lista. */
+    public void rechazarPor(String userId) {
+        if (esSolicitudPara(userId)) {
+            this.solicitudPara = null;
+            this.archivadaPara = userId;
+        }
     }
 }

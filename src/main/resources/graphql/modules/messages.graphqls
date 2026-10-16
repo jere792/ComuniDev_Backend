@@ -14,6 +14,8 @@ type MessageConversation {
   mensajesNoLeidos: Int
   createdAt: String
   updatedAt: String
+  "True si para quien consulta el hilo esta pendiente de aceptar (estilo solicitudes de Instagram)."
+  esSolicitud: Boolean
 }
 
 type Message {
@@ -26,20 +28,26 @@ type Message {
 }
 
 extend type Query {
-  "Conversaciones de una persona, de la mas reciente a la mas vieja."
+  "Conversaciones visibles de una persona, de la mas reciente a la mas vieja."
   conversations(userId: String!): [MessageConversation!]!
+  "Solicitudes pendientes: hilos de alguien a quien esta persona no sigue todavia."
+  messageRequests(userId: String!): [MessageConversation!]!
   "Mensajes de un hilo, del mas antiguo al mas reciente."
   messages(userId: String!, conversationId: String!): [Message!]!
 }
 
 extend type Mutation {
   """
-  Envia un mensaje y crea la conversacion si no existia todavia. Devuelve null
-  cuando el texto queda vacio, para no frenar el formulario por un espacio.
+  Envia un mensaje y crea la conversacion si no existia todavia. Cuando el
+  receptor no sigue al emisor, el hilo nace como solicitud para el receptor.
   """
   sendMessage(emisorId: String!, receptorId: String!, texto: String!): Message
   "Deja el hilo como leido para esa persona y reinicia su contador."
   markConversationRead(userId: String!, conversationId: String!): Boolean
+  "Pasa una solicitud a conversacion normal para quien la recibio."
+  acceptConversation(userId: String!, conversationId: String!): Boolean
+  "Deja de verse para quien la rechaza; el emisor sigue viendo el hilo."
+  rejectConversation(userId: String!, conversationId: String!): Boolean
 }
 
 extend type Subscription {

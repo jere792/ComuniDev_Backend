@@ -1,5 +1,7 @@
 package com.comunidev.comunidevbackend.message.application.service;
 
+import com.comunidev.comunidevbackend.follow.application.port.out.FollowRepositoryPort;
+import com.comunidev.comunidevbackend.follow.domain.Follow;
 import com.comunidev.comunidevbackend.message.application.port.out.MessageRepositoryPort;
 import com.comunidev.comunidevbackend.message.domain.Conversation;
 import com.comunidev.comunidevbackend.message.domain.Message;
@@ -12,10 +14,12 @@ import org.junit.jupiter.api.Test;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -29,14 +33,20 @@ class MessageServiceTest {
     private static final String LUIS = "6aa6df4632d88291971df62e";
 
     private FakeMessageRepository repository;
+    private FakeFollowRepository follows;
     private RealtimeEventPublisher realtime;
     private MessageService service;
 
     @BeforeEach
     void setUp() {
         repository = new FakeMessageRepository();
+        follows = new FakeFollowRepository();
+        // Por defecto los dos se siguen, para que los tests que no estudian
+        // solicitudes caigan en la lista normal.
+        follows.seguir(LUIS, ANA);
+        follows.seguir(ANA, LUIS);
         realtime = new RealtimeEventPublisher();
-        service = new MessageService(repository, realtime);
+        service = new MessageService(repository, follows, realtime);
     }
 
     @Test
@@ -188,6 +198,97 @@ class MessageServiceTest {
         assertFalse(service.marcarLeido(ANA, "no-existe"));
     }
 
+    @Test
+    @DisplayName("enviarMensaje deja el hilo como solicitud cuando el receptor no sigue al emisor")
+    void enviarMensajeQuedaComoSolicitud() {
+        follows.dejarDeSeguir(LUIS, ANA);
+
+        service.enviarMensaje(ANA, LUIS, "Hola");
+
+        assertTrue(service.obtenerConversaciones(LUIS).isEmpty());
+        assertEquals(1, service.obtenerSolicitudes(LUIS).size());
+        // El emisor siempre ve su hilo en su lista, sin saber que quedo oculto.
+        assertEquals(1, service.obtenerConversaciones(ANA).size());
+    }
+
+    @Test
+    @DisplayName("si el receptor ya sigue al emisor no hay solicitud")
+    void enviarMensajeSinSolicitudSiLoSigue() {
+        service.enviarMensaje(ANA, LUIS, "Hola");
+
+        assertTrue(service.obtenerSolicitudes(LUIS).isEmpty());
+        assertEquals(1, service.obtenerConversaciones(LUIS).size());
+    }
+
+    @Test
+    @DisplayName("aceptar pasa la solicitud a conversacion normal")
+    void aceptarPasaLaSolicitud() {
+        follows.dejarDeSeguir(LUIS, ANA);
+        service.enviarMensaje(ANA, LUIS, "Hola");
+
+        assertTrue(service.aceptar(LUIS, primeraConversacion().getId()));
+
+        assertTrue(service.obtenerSolicitudes(LUIS).isEmpty());
+        assertEquals(1, service.obtenerConversaciones(LUIS).size());
+    }
+
+    @Test
+    @DisplayName("rechazar deja de verse para quien rechaza pero el emisor sigue viendolo")
+    void rechazarOcultaParaElReceptor() {
+        follows.dejarDeSeguir(LUIS, ANA);
+        service.enviarMensaje(ANA, LUIS, "Hola");
+
+        assertTrue(service.rechazar(LUIS, primeraConversacion().getId()));
+
+        assertTrue(service.obtenerSolicitudes(LUIS).isEmpty());
+        assertTrue(service.obtenerConversaciones(LUIS).isEmpty());
+        assertEquals(1, service.obtenerConversaciones(ANA).size());
+    }
+
+    @Test
+    @DisplayName("responder a una solicitud la acepta implicitamente")
+    void responderAceptaLaSolicitud() {
+        follows.dejarDeSeguir(LUIS, ANA);
+        service.enviarMensaje(ANA, LUIS, "Hola");
+
+        service.enviarMensaje(LUIS, ANA, "Hola! Perdon la demora");
+
+        assertTrue(service.obtenerSolicitudes(LUIS).isEmpty());
+        assertEquals(1, service.obtenerConversaciones(LUIS).size());
+    }
+
+    @Test
+    @DisplayName("escribir de nuevo tras un rechazo vuelve a plantear la solicitud")
+    void reescribirTrasRechazoVuelveASolicitud() {
+        follows.dejarDeSeguir(LUIS, ANA);
+        service.enviarMensaje(ANA, LUIS, "Hola");
+        service.rechazar(LUIS, primeraConversacion().getId());
+
+        service.enviarMensaje(ANA, LUIS, "Una consulta");
+
+        assertEquals(1, service.obtenerSolicitudes(LUIS).size());
+        assertTrue(service.obtenerConversaciones(LUIS).isEmpty());
+    }
+
+    @Test
+    @DisplayName("aceptar o rechazar algo que no es solicitud devuelve false")
+    void aceptarRechazarSinSolicitud() {
+        service.enviarMensaje(ANA, LUIS, "Hola");
+
+        assertFalse(service.aceptar(LUIS, primeraConversacion().getId()));
+        assertFalse(service.rechazar(LUIS, primeraConversacion().getId()));
+    }
+
+    @Test
+    @DisplayName("solicitudes solo devuelve los hilos pendientes de esa persona")
+    void solicitudesFiltraPorPersona() {
+        follows.dejarDeSeguir(LUIS, ANA);
+        service.enviarMensaje(ANA, LUIS, "Hola");
+
+        assertTrue(service.obtenerSolicitudes(ANA).isEmpty());
+        assertEquals(1, service.obtenerSolicitudes(LUIS).size());
+    }
+
     private Conversation primeraConversacion() {
         return repository.conversaciones.values().iterator().next();
     }
@@ -237,6 +338,13 @@ class MessageServiceTest {
         }
 
         @Override
+        public List<Conversation> findConversacionesVisibles(String userId) {
+            return findConversationsByUserId(userId).stream()
+                    .filter(c -> !c.esSolicitudPara(userId) && !c.esArchivadaPara(userId))
+                    .toList();
+        }
+
+        @Override
         public Message saveMessage(Message message) {
             if (message.getId() == null) {
                 secuenciaMensaje++;
@@ -252,6 +360,52 @@ class MessageServiceTest {
                     .filter(m -> conversationId.equals(m.getConversationId()))
                     .sorted(Comparator.comparing(Message::getCreatedAt))
                     .toList();
+        }
+    }
+
+    /** Follows en memoria: solo el par que importa, sin tocar MongoDB. */
+    private static class FakeFollowRepository implements FollowRepositoryPort {
+
+        private final Set<String> pares = new HashSet<>();
+
+        void seguir(String seguidorId, String seguidoId) {
+            pares.add(clave(seguidorId, seguidoId));
+        }
+
+        void dejarDeSeguir(String seguidorId, String seguidoId) {
+            pares.remove(clave(seguidorId, seguidoId));
+        }
+
+        @Override
+        public Follow save(Follow follow) {
+            pares.add(clave(follow.getSeguidorId(), follow.getSeguidoId()));
+            return follow;
+        }
+
+        @Override
+        public List<Follow> findBySeguidorId(String seguidorId) {
+            return List.of();
+        }
+
+        @Override
+        public List<Follow> findBySeguidoId(String seguidoId) {
+            return List.of();
+        }
+
+        @Override
+        public Optional<Follow> findBySeguidorIdAndSeguidoId(String seguidorId, String seguidoId) {
+            return pares.contains(clave(seguidorId, seguidoId))
+                    ? Optional.of(Follow.create(seguidorId, "user", seguidoId))
+                    : Optional.empty();
+        }
+
+        @Override
+        public void delete(Follow follow) {
+            pares.remove(clave(follow.getSeguidorId(), follow.getSeguidoId()));
+        }
+
+        private String clave(String seguidorId, String seguidoId) {
+            return seguidorId + "|" + seguidoId;
         }
     }
 }

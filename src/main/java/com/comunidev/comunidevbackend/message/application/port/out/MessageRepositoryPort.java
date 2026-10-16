@@ -16,6 +16,9 @@ public interface MessageRepositoryPort {
 
     List<Conversation> findConversationsByUserId(String userId);
 
+    /** Solo las visibles para esa persona: ni solicitud pendiente ni rechazada. */
+    List<Conversation> findConversacionesVisibles(String userId);
+
     Message saveMessage(Message message);
 
     List<Message> findMessagesByConversationId(String conversationId);
