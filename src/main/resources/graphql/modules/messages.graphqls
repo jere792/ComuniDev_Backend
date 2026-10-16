@@ -1,0 +1,48 @@
+"""
+Hilo de mensajes entre dos personas. La pareja se guarda ordenada, de modo
+que siempre existe un unico hilo por par, sin importar quien lo inicio.
+"""
+type MessageConversation {
+  id: ID!
+  participantes: [String!]!
+  "El otro participante, visto desde quien consulta."
+  otroUserId: String
+  ultimoMensajeTexto: String
+  ultimoMensajeEmisorId: String
+  ultimoMensajeEn: String
+  "No leidos que quedan para quien consulta."
+  mensajesNoLeidos: Int
+  createdAt: String
+  updatedAt: String
+}
+
+type Message {
+  id: ID!
+  conversationId: String!
+  emisorId: String!
+  texto: String!
+  leido: Boolean!
+  createdAt: String
+}
+
+extend type Query {
+  "Conversaciones de una persona, de la mas reciente a la mas vieja."
+  conversations(userId: String!): [MessageConversation!]!
+  "Mensajes de un hilo, del mas antiguo al mas reciente."
+  messages(userId: String!, conversationId: String!): [Message!]!
+}
+
+extend type Mutation {
+  """
+  Envia un mensaje y crea la conversacion si no existia todavia. Devuelve null
+  cuando el texto queda vacio, para no frenar el formulario por un espacio.
+  """
+  sendMessage(emisorId: String!, receptorId: String!, texto: String!): Message
+  "Deja el hilo como leido para esa persona y reinicia su contador."
+  markConversationRead(userId: String!, conversationId: String!): Boolean
+}
+
+extend type Subscription {
+  "Cada mensaje que entra a un hilo de la persona, entregado al instante."
+  messageReceived(userId: String!): Message
+}
